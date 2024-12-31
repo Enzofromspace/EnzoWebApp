@@ -7,7 +7,7 @@ export const initSoundEffects = async () => {
   await Tone.start();
   
   clickSound = new Tone.Player({
-    url: './assets/sounds/click.mp3',
+    url: '/sounds/click.mp3',
     autostart: false,
   }).toDestination();
 };

@@ -1,14 +1,28 @@
 import { Sprite } from '@pixi/react';
-import { useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 const Character = () => {
-  // Load character texture
-  const characterTexture = './assets/images/character.png';
+  const [isLoaded, setIsLoaded] = useState(false);
+  const characterTexture = '/images/character.png';
 
-  const onLoad = useCallback(() => {
-    // Add character animations here
-    console.log('Character loaded');
+  useEffect(() => {
+    const img = new Image();
+    img.src = characterTexture;
+    console.log('Attempting to load character:', img.src);
+    
+    img.onload = () => {
+      console.log('Character loaded successfully');
+      setIsLoaded(true);
+    };
+
+    img.onerror = (e) => {
+      console.error('Failed to load character:', e);
+    };
   }, []);
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <Sprite 
@@ -16,7 +30,7 @@ const Character = () => {
       x={100}
       y={window.innerHeight / 2}
       anchor={{ x: 0.5, y: 0.5 }}
-      onLoad={onLoad}
+      scale={0.5}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { playClickSound } from '../utils/soundEffects';
+import { playClickSound } from '@/utils/soundEffects';
 
 interface ChoiceBoxProps {
   text: string;
