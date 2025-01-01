@@ -112,20 +112,16 @@ const GameContainer = () => {
         <Background />
         <Character />
       </Stage>
-      {isInitialized && (
-        <>
-          <DialogueBox />
-          <div className="choices-container">
-            {choices.map((choice, index) => (
-              <ChoiceBox 
-                key={index}
-                text={choice.text}
-                onClick={() => handleChoice(index)}
-              />
-            ))}
-          </div>
-        </>
-      )}
+      <DialogueBox />
+      <div className="choices-container">
+        {choices.map((choice, index) => (
+          <ChoiceBox 
+            key={index}
+            text={choice.text}
+            onClick={() => handleChoice(index)}
+          />
+        ))}
+      </div>
     </div>
   );
 };
