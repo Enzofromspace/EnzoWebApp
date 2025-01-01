@@ -42,4 +42,7 @@ export default defineConfig({
     include: ['react', 'react-dom', '@pixi/react', 'pixi.js'],
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
+  json: {
+    stringify: true
+  }
 }); 

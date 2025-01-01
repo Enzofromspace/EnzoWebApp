@@ -27,7 +27,7 @@ const Character = () => {
   return (
     <Sprite 
       image={characterTexture}
-      x={100}
+      x={window.innerWidth * 0.2}
       y={window.innerHeight / 2}
       anchor={{ x: 0.5, y: 0.5 }}
       scale={0.5}

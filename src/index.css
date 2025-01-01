@@ -20,12 +20,13 @@
 
 .choices-container {
   position: absolute;
-  right: 20px;
+  right: 40px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+  width: 250px;
 }
 
 .choice-box {
@@ -34,9 +35,26 @@
   padding: 15px 30px;
   border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+  font-size: 1.1em;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .choice-box:hover {
   transform: scale(1.05);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
 } 
