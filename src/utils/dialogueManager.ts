@@ -269,10 +269,18 @@ class DialogueManager {
   public startAutoPlay() {
     this.startContentCycle();
   }
+
+  public resetToHome(): void {
+    this.stopContentCycle();
+    this.currentNode = 'start';
+    this.currentText = dialogueTree.start.text;
+    window.dispatchEvent(new CustomEvent('dialogue-update'));
+  }
 }
 
 export const getCurrentText = () => DialogueManager.getInstance().getCurrentText();
 export const getCurrentChoices = () => DialogueManager.getInstance().getCurrentChoices();
 export const makeChoice = (index: number) => DialogueManager.getInstance().makeChoice(index);
 export const handleEasterEggClick = () => DialogueManager.getInstance().handleEasterEggClick();
-export const startAutoPlay = () => DialogueManager.getInstance().startAutoPlay(); 
+export const startAutoPlay = () => DialogueManager.getInstance().startAutoPlay();
+export const resetToHome = () => DialogueManager.getInstance().resetToHome(); 

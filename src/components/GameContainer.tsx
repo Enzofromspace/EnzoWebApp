@@ -7,6 +7,7 @@ import ChoiceBox from '@/components/ChoiceBox';
 import { initSoundEffects } from '@/utils/soundEffects';
 import { getCurrentChoices, makeChoice, DialogueChoice } from '@/utils/dialogueManager';
 import gsap from 'gsap';
+import ResetButton from '@/components/ResetButton';
 
 const GameContainer = () => {
   const [isInitialized, setIsInitialized] = useState(false);
@@ -121,6 +122,7 @@ const GameContainer = () => {
             onClick={() => handleChoice(index)}
           />
         ))}
+        <ResetButton />
       </div>
     </div>
   );
