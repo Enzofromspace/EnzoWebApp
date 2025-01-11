@@ -12,14 +12,16 @@ export const initSoundEffects = async () => {
       await Tone.start();
     }
     
+    // Create a more sophisticated synth with better envelope settings
     synth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: 'triangle' },
       envelope: {
-        attack: 0.005,
+        attack: 0.02,
         decay: 0.1,
-        sustain: 0,
-        release: 0.1
-      }
+        sustain: 0.1,
+        release: 0.3
+      },
+      volume: -6 // Slightly reduce volume to prevent clipping
     }).toDestination();
 
     isInitialized = true;
@@ -36,8 +38,18 @@ export const playClickSound = async () => {
   try {
     if (synth) {
       await Tone.start();
-      // Play a quick arpeggio for click effect
-      synth.triggerAttackRelease(['C5', 'E5'], '32n');
+      
+      // Create a sequence of notes with specific timing
+      const now = Tone.now();
+      const sixteenth = 0.1; // Adjust timing for faster/slower arpeggio
+      
+      // Play the arpeggio sequence
+      synth.triggerAttackRelease('C5', '16n', now);
+      synth.triggerAttackRelease('F5', '16n', now + sixteenth);
+      synth.triggerAttackRelease('G5', '16n', now + sixteenth * 2);
+      
+      // Final resolving chord
+      synth.triggerAttackRelease(['C5', 'G5'], '8n', now + sixteenth * 3);
     }
   } catch (error) {
     console.error('Failed to play click sound:', error);
