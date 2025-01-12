@@ -1,16 +1,14 @@
+import { useEffect, useState } from 'react';
 import { Stage } from '@pixi/react';
-import { useEffect, useState, useCallback } from 'react';
-import Background from '@/components/Background';
-import Character from '@/components/Character';
-import DialogueBox from '@/components/DialogueBox';
-import ChoiceBox from '@/components/ChoiceBox';
+import { DialogueChoice, getCurrentChoices, makeChoice, resetToHome } from '@/utils/dialogueManager';
 import { initSoundEffects } from '@/utils/soundEffects';
-import { getCurrentChoices, makeChoice, DialogueChoice } from '@/utils/dialogueManager';
+import DialogueBox from './DialogueBox';
+import ChoiceBox from './ChoiceBox';
+import Character from './Character';
 import gsap from 'gsap';
-import ResetButton from '@/components/ResetButton';
+import Background from './Background';
 
 const GameContainer = () => {
-  const [isInitialized, setIsInitialized] = useState(false);
   const [choices, setChoices] = useState<DialogueChoice[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState({
@@ -19,34 +17,33 @@ const GameContainer = () => {
   });
 
   useEffect(() => {
-    // Initialize choices immediately
-    try {
-      const currentChoices = getCurrentChoices();
-      setChoices(currentChoices);
-    } catch (err) {
-      console.error('Failed to load initial choices:', err);
-      setError('Failed to load choices');
-    }
-  }, []); // Empty dependency array means this runs once on mount
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
 
-  const initialize = useCallback(async () => {
-    if (isInitialized) return;
-    
-    try {
-      console.log('Initializing game components...');
-      await initSoundEffects();
-      setIsInitialized(true);
-    } catch (err) {
-      console.error('Initialization error:', err);
-      setError('Failed to initialize game components');
-    }
-  }, [isInitialized]);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const handleChoice = async (index: number) => {
-    if (!isInitialized) {
-      await initialize();
-    }
-    
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await initSoundEffects();
+        const currentChoices = getCurrentChoices();
+        setChoices(currentChoices);
+      } catch (err) {
+        console.error('Initialization error:', err);
+        setError('Failed to initialize game components');
+      }
+    };
+
+    init();
+  }, []);
+
+  const handleChoice = (index: number) => {
     try {
       gsap.to('.choices-container', {
         opacity: 0,
@@ -66,33 +63,10 @@ const GameContainer = () => {
     }
   };
 
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      initialize();
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
-    };
-
-    window.addEventListener('click', handleFirstInteraction);
-    window.addEventListener('touchstart', handleFirstInteraction);
-
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
-    };
-  }, [initialize]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const handleHomeClick = () => {
+    resetToHome();
+    setChoices(getCurrentChoices());
+  };
 
   if (error) {
     return <div className="error-message">{error}</div>;
@@ -116,13 +90,15 @@ const GameContainer = () => {
       <DialogueBox />
       <div className="choices-container">
         {choices.map((choice, index) => (
-          <ChoiceBox 
+          <ChoiceBox
             key={index}
             text={choice.text}
             onClick={() => handleChoice(index)}
           />
         ))}
-        <ResetButton />
+        <button className="home-button" onClick={handleHomeClick}>
+          🏠
+        </button>
       </div>
     </div>
   );

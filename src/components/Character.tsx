@@ -1,4 +1,4 @@
-import { Sprite } from '@pixi/react';
+import { Container as PixiContainer, Sprite as PixiSprite } from '@pixi/react';
 import { useState, useEffect } from 'react';
 
 const Character = () => {
@@ -7,39 +7,48 @@ const Character = () => {
   );
   const [isLoaded, setIsLoaded] = useState(false);
   const characterTexture = '/images/character.png';
+  
+  const position = {
+    x: window.innerWidth * 0.15,
+    y: isMobile ? window.innerHeight * 0.45 : window.innerHeight * 0.85
+  };
 
   useEffect(() => {
-    setIsMobile(window.innerWidth <= 768);
-    
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
+      // Emit position change event
+      window.dispatchEvent(new CustomEvent('character-move', {
+        detail: {
+          x: window.innerWidth * 0.15,
+          y: window.innerWidth <= 768 ? window.innerHeight * 0.45 : window.innerHeight * 0.85
+        }
+      }));
     };
 
+    setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
+    
     const img = new Image();
     img.src = characterTexture;
-    
-    img.onload = () => {
-      setIsLoaded(true);
+    img.onload = () => setIsLoaded(true);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   if (!isLoaded) return null;
 
   return (
-    <Sprite 
-      image={characterTexture}
-      x={window.innerWidth * 0.2}
-      y={isMobile ? window.innerHeight * 0.45 : window.innerHeight * 0.8}
-      anchor={{ x: 0.5, y: 0.5 }}
-      scale={isMobile ? 0.4 : 0.5}
-    />
+    <PixiContainer>
+      <PixiSprite 
+        image={characterTexture}
+        x={position.x}
+        y={position.y}
+        anchor={{ x: 0.5, y: 1 }}
+        scale={isMobile ? 0.4 : 0.5}
+      />
+    </PixiContainer>
   );
 };
 

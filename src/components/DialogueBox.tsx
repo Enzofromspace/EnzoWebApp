@@ -13,7 +13,6 @@ const DialogueBox = () => {
   const CHAR_DELAY = 50; // ms between each character
 
   const animateText = useCallback((text: string) => {
-    // Clear any existing animation
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -22,20 +21,19 @@ const DialogueBox = () => {
     setDisplayText('');
     let currentIndex = 0;
 
-    const showNextChar = () => {
+    const showNextChar = async () => {
       if (currentIndex <= text.length) {
         setDisplayText(text.slice(0, currentIndex));
         
-        if (currentIndex < text.length) {
-          // Only play sound for non-space characters
-          if (text[currentIndex]?.trim()) {
-            playTextBlip();
-          }
-          currentIndex++;
-          timeoutRef.current = setTimeout(showNextChar, CHAR_DELAY);
-        } else {
-          setIsAnimating(false);
+        if (currentIndex < text.length && text[currentIndex]?.trim()) {
+          await playTextBlip();
         }
+        
+        currentIndex++;
+        timeoutRef.current = setTimeout(showNextChar, CHAR_DELAY);
+      } else {
+        setIsAnimating(false);
+        window.dispatchEvent(new CustomEvent('text-animation-complete'));
       }
     };
 
