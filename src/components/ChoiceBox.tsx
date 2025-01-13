@@ -1,4 +1,4 @@
-import { playChoiceSound } from '@/utils/soundEffects';
+import { playClickSound } from '@/utils/soundEffects';
 import gsap from 'gsap';
 
 interface ChoiceBoxProps {
@@ -9,11 +9,11 @@ interface ChoiceBoxProps {
 const ChoiceBox = ({ text, onClick }: ChoiceBoxProps) => {
   const handleClick = async () => {
     try {
-      await playChoiceSound();
+      await playClickSound();
       onClick();
     } catch (err) {
       console.error('Error playing choice sound:', err);
-      onClick(); // Still execute onClick even if sound fails
+      onClick();
     }
   };
 

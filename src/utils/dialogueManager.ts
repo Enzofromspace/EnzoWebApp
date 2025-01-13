@@ -1,5 +1,5 @@
 import dialogueContent from '@/data/dialogueContent.json';
-import { playChoiceSound } from './soundEffects';
+import { playClickSound } from './soundEffects';
 
 export interface DialogueChoice {
   text: string;
@@ -137,7 +137,7 @@ class DialogueManager {
 
   public makeChoice(choiceIndex: number): void {
     this.stopContentCycle();
-    playChoiceSound().catch(console.error);
+    playClickSound().catch(console.error);
 
     const choices = this.getCurrentChoices();
     if (choiceIndex >= 0 && choiceIndex < choices.length) {
