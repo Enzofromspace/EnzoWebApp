@@ -4,14 +4,19 @@ import { getCurrentText, handleEasterEggClick } from '@/utils/dialogueManager';
 import { playTextBlip } from '@/utils/soundEffects';
 
 const DialogueBox = () => {
-  const [displayText, setDisplayText] = useState('');
-  const [fullText, setFullText] = useState('');
+  // Text display state
+  const [displayText, setDisplayText] = useState('');  // Currently visible text
+  const [fullText, setFullText] = useState('');       // Complete text to display
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // Refs for animation control
   const dialogueRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
   
+  // Animation timing constant
   const CHAR_DELAY = 50; // ms between each character
 
+  // Text animation handler with sound
   const animateText = useCallback((text: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -40,12 +45,13 @@ const DialogueBox = () => {
     showNextChar();
   }, []);
 
-  // Separate effect for handling dialogue updates
+  // Handle dialogue state updates
   useEffect(() => {
     const handleDialogueUpdate = () => {
       const newText = getCurrentText();
       setFullText(newText);
       
+      // Animate dialogue box entry
       if (dialogueRef.current) {
         gsap.fromTo(dialogueRef.current,
           { opacity: 0, y: 30 },
@@ -53,7 +59,7 @@ const DialogueBox = () => {
         );
       }
       
-      // Always animate new text
+      // Start text animation
       animateText(newText);
     };
 

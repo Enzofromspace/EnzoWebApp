@@ -26,27 +26,22 @@ export const initSoundEffects = async () => {
 
     // Updated blip synth for eerie text sounds
     const filter = new Tone.Filter({
-      type: "lowpass",
-      frequency: 1000,
+      type: "highpass",
+      frequency: 1200,
       rolloff: -12
     }).toDestination();
 
     blipSynth = new Tone.Synth({
       oscillator: {
-        type: 'sine',
-        // Add slight detuning for eeriness
-        detune: -3,
-        // Add subtle modulation
-        modulationType: 'sine',
-        modulationIndex: 0.5
+        type: 'square',
       },
       envelope: {
-        attack: 0.01,
-        decay: 0.2,
-        sustain: 0.1,
-        release: 0.1
+        attack: 0.05,
+        decay: 0.5,
+        sustain: 0.5,
+        release: 0.5
       },
-      volume: -15 // Slightly quieter
+      volume: -20 // Slightly quieter
     }).connect(filter);
 
     isInitialized = true;
@@ -85,19 +80,10 @@ export const playTextBlip = async () => {
     if (blipSynth) {
       await Tone.start();
       // Use lower notes for eerier sound
-      const notes = ['D3', 'F#3', 'A3'];
-      const randomNote = notes[Math.floor(Math.random() * notes.length)];
-      
-      // Get current time for glissando effect
-      const now = Tone.now();
-      
-      // Create subtle pitch slide
-      blipSynth.frequency.setValueAtTime(Tone.Frequency(randomNote).toFrequency(), now);
-      blipSynth.frequency.linearRampToValueAtTime(
-        Tone.Frequency(randomNote).transpose(0.5).toFrequency(),
-        now + 0.1
-      );
-      
+      const notes = ['C4', 'E4', 'G4'];
+    //  F4, A4, C5 
+    // C4, E4, G4
+      const randomNote = notes[Math.floor(Math.random() * notes.length)];      
       blipSynth.triggerAttackRelease(randomNote, '16n');
     }
   } catch (error) {

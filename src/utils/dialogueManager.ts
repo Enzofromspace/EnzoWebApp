@@ -27,29 +27,35 @@ const dialogueTree: DialogueTree = {
     ]
   },
   "get_to_know": {
-    text: "Let's explore getting to know each other...",
+    text: "Solid Choice. People have been telling me good things.",
     choices: [
-      { text: "Tell me about yourself", nextNode: "get_to_know_end" },
-      { text: "What do you like to do?", nextNode: "get_to_know_end" },
-      { text: "How did you get here?", nextNode: "get_to_know_end" }
+      { text: "See the resume", nextNode: "get_to_know_end" },
+      { text: "Get Enzo's socials", nextNode: "get_to_know_end2" },
+      { text: "Learn about this project", nextNode: "get_to_know_end3" }
     ]
   },
   "get_to_know_end": {
-    text: "Thanks for getting to know me better!"
+    text: "I hope you'll find my creator's experience intriguing"
+  },
+  "get_to_know_end2": {
+    text: "Oof. Harsh choice. I hear Enzo's pretty weird online...much cooler in person."
+  },
+  "get_to_know_end3": {
+    text: "A curious mind is often rewarded. Respect."
   },
   "work_with": {
-    text: "Let's explore working together...",
+    text: "Enzo is programmed to support three primary tracks. Choose now...",
     choices: [
-      { text: "Help me with coding", nextNode: "work_with_end" },
-      { text: "Help me with writing", nextNode: "work_with_end" },
-      { text: "Help me brainstorm", nextNode: "work_with_end" }
+      { text: "I'm ready for a marketing agency", nextNode: "work_with_end" },
+      { text: "I need marketing consultation", nextNode: "work_with_end" },
+      { text: "Support this project", nextNode: "work_with_end" }
     ]
   },
   "work_with_end": {
     text: "I look forward to working with you more!"
   },
   "kill_time": {
-    text: "Let's do something fun...",
+    text: "Ticking away the moments that make up a dull day.",
     choices: [
       { text: "Tell me a joke", nextNode: "tell_joke" },
       { text: "Share a quote", nextNode: "share_quote" },
@@ -68,17 +74,24 @@ const dialogueTree: DialogueTree = {
 };
 
 class DialogueManager {
+  // Singleton instance for global state management
   private static instance: DialogueManager;
-  private currentNode: string = 'start';
-  private currentText: string = dialogueTree.start.text;
+  
+  // Core state variables
+  private currentNode: string = 'start';  // Tracks current position in dialogue tree
+  private currentText: string = dialogueTree.start.text;  // Current displayed text
+  
+  // Auto-play cycle state
   private contentCycle: ContentType[] = ['thoughts', 'jokes', 'quotes', 'easter_eggs'];
   private currentCycleIndex: number = 0;
   private isAutoPlaying: boolean = false;
   private cycleTimeout: NodeJS.Timeout | null = null;
   private static CYCLE_DELAY = 8000;
 
+  // Private constructor for singleton pattern
   private constructor() {}
 
+  // State management methods
   private startContentCycle() {
     if (this.isAutoPlaying) return;
     this.isAutoPlaying = true;
@@ -108,6 +121,7 @@ class DialogueManager {
   }
 
   private stopContentCycle() {
+    // Reset auto-play state
     this.isAutoPlaying = false;
     if (this.cycleTimeout) {
       clearTimeout(this.cycleTimeout);
@@ -126,13 +140,13 @@ class DialogueManager {
     return array[Math.floor(Math.random() * array.length)];
   }
 
+  // Public state accessors
   public getCurrentText(): string {
     return this.currentText;
   }
 
   public getCurrentChoices(): DialogueChoice[] {
-    const node = dialogueTree[this.currentNode];
-    return node.choices || [];
+    return dialogueTree[this.currentNode].choices || [];
   }
 
   public makeChoice(choiceIndex: number): void {

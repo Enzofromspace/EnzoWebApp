@@ -9,8 +9,13 @@ import gsap from 'gsap';
 import Background from './Background';
 
 const GameContainer = () => {
+  // Core state for choice management
   const [choices, setChoices] = useState<DialogueChoice[]>([]);
+  
+  // Error handling state
   const [error, setError] = useState<string | null>(null);
+  
+  // Responsive layout state
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight
@@ -28,6 +33,7 @@ const GameContainer = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Initialize sound effects and choices on mount
   useEffect(() => {
     const init = async () => {
       try {
@@ -43,14 +49,19 @@ const GameContainer = () => {
     init();
   }, []);
 
+  // Handle choice selection with animation
   const handleChoice = (index: number) => {
     try {
+      // Fade out current choices
       gsap.to('.choices-container', {
         opacity: 0,
         duration: 0.3,
         onComplete: () => {
+          // Update dialogue state
           makeChoice(index);
+          // Update local choice state
           setChoices(getCurrentChoices());
+          // Fade in new choices
           gsap.to('.choices-container', {
             opacity: 1,
             duration: 0.3
