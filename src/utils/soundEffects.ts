@@ -11,8 +11,8 @@ export const initSoundEffects = async () => {
     if (Tone.context.state !== 'running') {
       await Tone.start();
     }
-    
-    // Main synth for button clicks
+
+    // Main synth for button clicks (unchanged)
     synth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: 'triangle' },
       envelope: {
@@ -24,50 +24,30 @@ export const initSoundEffects = async () => {
       volume: -6
     }).toDestination();
 
-    // Updated blip synth for eerie text sounds
+    // Highpass filter for blip synth
     const filter = new Tone.Filter({
       type: "highpass",
-      frequency: 1200,
+      frequency: 1500, // Removes low-end, keeps sharpness
       rolloff: -12
     }).toDestination();
 
+    // Blip synth with percussive adjustments
     blipSynth = new Tone.Synth({
       oscillator: {
-        type: 'square',
+        type: 'triangle', // Punchier sound than sine
       },
       envelope: {
-        attack: 0.05,
-        decay: 0.5,
-        sustain: 0.5,
-        release: 0.5
+        attack: 0.005,    // Instant attack for percussive effect
+        decay: 0.1,       // Quick decay for sharpness
+        sustain: 0,       // No sustained tone
+        release: 0.1      // Short release for clean cutoff
       },
-      volume: -20 // Slightly quieter
+      volume: -10 // Slightly louder to emphasize percussive quality
     }).connect(filter);
 
     isInitialized = true;
   } catch (error) {
     console.error('Failed to initialize sound effects:', error);
-  }
-};
-
-export const playClickSound = async () => {
-  if (!isInitialized) {
-    await initSoundEffects();
-  }
-  
-  try {
-    if (synth) {
-      await Tone.start();
-      const now = Tone.now();
-      const sixteenth = 0.1;
-      
-      synth.triggerAttackRelease('C5', '16n', now);
-      synth.triggerAttackRelease('F5', '16n', now + sixteenth);
-      synth.triggerAttackRelease('G5', '16n', now + sixteenth * 2);
-      synth.triggerAttackRelease(['C5', 'G5'], '8n', now + sixteenth * 3);
-    }
-  } catch (error) {
-    console.error('Failed to play click sound:', error);
   }
 };
 
@@ -79,14 +59,35 @@ export const playTextBlip = async () => {
   try {
     if (blipSynth) {
       await Tone.start();
-      // Use lower notes for eerier sound
-      const notes = ['C4', 'E4', 'G4'];
-    //  F4, A4, C5 
-    // C4, E4, G4
-      const randomNote = notes[Math.floor(Math.random() * notes.length)];      
-      blipSynth.triggerAttackRelease(randomNote, '16n');
+
+      // Alternative notes with lower octaves for balance
+      const notes = ['C3', 'E3', 'G3', 'F3', 'A3', 'C4'];
+      const randomNote = notes[Math.floor(Math.random() * notes.length)];
+      
+      const now = Tone.now();
+      blipSynth.triggerAttackRelease(randomNote, '32n', now); // Shorter note duration for percussive feel
     }
   } catch (error) {
     console.error('Failed to play text blip:', error);
   }
-}; 
+};
+
+export const playClickSound = async () => {
+  if (!isInitialized) {
+    await initSoundEffects();
+  }
+
+  try {
+    if (blipSynth) {
+      await Tone.start();
+      const now = Tone.now();
+      // Play a sequence with the blipSynth
+      blipSynth.triggerAttackRelease('C5', '16n', now);
+      blipSynth.triggerAttackRelease('G5', '16n', now + 0.1);
+    }
+  } catch (error) {
+    console.error('Failed to play click sound:', error);
+  }
+};
+
+

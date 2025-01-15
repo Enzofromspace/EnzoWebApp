@@ -5,8 +5,8 @@ import { playTextBlip } from '@/utils/soundEffects';
 
 const DialogueBox = () => {
   // Text display state
-  const [displayText, setDisplayText] = useState('');  // Currently visible text
-  const [fullText, setFullText] = useState('');       // Complete text to display
+  const [displayText, setDisplayText] = useState(getCurrentText());  // Initialize with current text
+  const [fullText, setFullText] = useState(getCurrentText());       // Initialize with current text
   const [isAnimating, setIsAnimating] = useState(false);
   
   // Refs for animation control
@@ -63,10 +63,9 @@ const DialogueBox = () => {
       animateText(newText);
     };
 
-    // Initial text load
+    // Trigger initial animation
     handleDialogueUpdate();
 
-    // Listen for updates
     window.addEventListener('dialogue-update', handleDialogueUpdate);
     return () => {
       window.removeEventListener('dialogue-update', handleDialogueUpdate);
@@ -74,7 +73,7 @@ const DialogueBox = () => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [animateText]); // Only depend on animateText
+  }, [animateText]);
 
   const handleClick = () => {
     if (isAnimating) {

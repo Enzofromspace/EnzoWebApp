@@ -88,6 +88,9 @@ class DialogueManager {
   private cycleTimeout: NodeJS.Timeout | null = null;
   private static CYCLE_DELAY = 8000;
 
+  private nodeHistory: string[] = ['start'];
+  private currentHistoryIndex: number = 0;
+
   // Private constructor for singleton pattern
   private constructor() {}
 
@@ -156,6 +159,12 @@ class DialogueManager {
     const choices = this.getCurrentChoices();
     if (choiceIndex >= 0 && choiceIndex < choices.length) {
       const nextNode = choices[choiceIndex].nextNode;
+      
+      // Update history when making a choice
+      this.nodeHistory = this.nodeHistory.slice(0, this.currentHistoryIndex + 1);
+      this.nodeHistory.push(nextNode);
+      this.currentHistoryIndex = this.nodeHistory.length - 1;
+      
       this.currentNode = nextNode;
 
       switch (nextNode) {
@@ -199,6 +208,24 @@ class DialogueManager {
     }
     window.dispatchEvent(new CustomEvent('dialogue-update'));
   }
+
+  public navigateBack(): void {
+    if (this.currentHistoryIndex > 0) {
+      this.currentHistoryIndex--;
+      this.currentNode = this.nodeHistory[this.currentHistoryIndex];
+      this.currentText = dialogueTree[this.currentNode].text;
+      window.dispatchEvent(new CustomEvent('dialogue-update'));
+    }
+  }
+
+  public navigateForward(): void {
+    if (this.currentHistoryIndex < this.nodeHistory.length - 1) {
+      this.currentHistoryIndex++;
+      this.currentNode = this.nodeHistory[this.currentHistoryIndex];
+      this.currentText = dialogueTree[this.currentNode].text;
+      window.dispatchEvent(new CustomEvent('dialogue-update'));
+    }
+  }
 }
 
 export const getCurrentText = () => DialogueManager.getInstance().getCurrentText();
@@ -206,4 +233,6 @@ export const getCurrentChoices = () => DialogueManager.getInstance().getCurrentC
 export const makeChoice = (index: number) => DialogueManager.getInstance().makeChoice(index);
 export const handleEasterEggClick = () => DialogueManager.getInstance().handleEasterEggClick();
 export const startAutoPlay = () => DialogueManager.getInstance().startAutoPlay();
-export const resetToHome = () => DialogueManager.getInstance().resetToHome(); 
+export const resetToHome = () => DialogueManager.getInstance().resetToHome();
+export const navigateBack = () => DialogueManager.getInstance().navigateBack();
+export const navigateForward = () => DialogueManager.getInstance().navigateForward(); 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Stage } from '@pixi/react';
-import { DialogueChoice, getCurrentChoices, makeChoice, resetToHome } from '@/utils/dialogueManager';
+import { DialogueChoice, getCurrentChoices, makeChoice, resetToHome, navigateBack, navigateForward } from '@/utils/dialogueManager';
 import { initSoundEffects } from '@/utils/soundEffects';
 import DialogueBox from './DialogueBox';
 import ChoiceBox from './ChoiceBox';
@@ -10,7 +10,7 @@ import Background from './Background';
 
 const GameContainer = () => {
   // Core state for choice management
-  const [choices, setChoices] = useState<DialogueChoice[]>([]);
+  const [choices, setChoices] = useState<DialogueChoice[]>(() => getCurrentChoices());
   
   // Error handling state
   const [error, setError] = useState<string | null>(null);
@@ -33,13 +33,23 @@ const GameContainer = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Initialize sound effects and choices on mount
+  // Initialize content immediately on mount
   useEffect(() => {
     const init = async () => {
       try {
         await initSoundEffects();
-        const currentChoices = getCurrentChoices();
-        setChoices(currentChoices);
+        
+        // Fade in initial content
+        gsap.fromTo(['.dialogue-box', '.choices-container'], 
+          { opacity: 0, y: 20 },
+          { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.5,
+            stagger: 0.2,
+            ease: 'power2.out'
+          }
+        );
       } catch (err) {
         console.error('Initialization error:', err);
         setError('Failed to initialize game components');
@@ -79,6 +89,25 @@ const GameContainer = () => {
     setChoices(getCurrentChoices());
   };
 
+  // Add navigation history management
+  const handleBack = () => {
+    try {
+      navigateBack();
+      setChoices(getCurrentChoices());
+    } catch (err) {
+      console.error('Navigation error:', err);
+    }
+  };
+
+  const handleForward = () => {
+    try {
+      navigateForward();
+      setChoices(getCurrentChoices());
+    } catch (err) {
+      console.error('Navigation error:', err);
+    }
+  };
+
   if (error) {
     return <div className="error-message">{error}</div>;
   }
@@ -107,9 +136,17 @@ const GameContainer = () => {
             onClick={() => handleChoice(index)}
           />
         ))}
-        <button className="home-button" onClick={handleHomeClick}>
-          🏠
-        </button>
+        <div className="navigation-buttons">
+          <button className="nav-button back" onClick={handleBack}>
+            ⬅️
+          </button>
+          <button className="home-button" onClick={handleHomeClick}>
+            🏠
+          </button>
+          <button className="nav-button forward" onClick={handleForward}>
+            ➡️
+          </button>
+        </div>
       </div>
     </div>
   );
