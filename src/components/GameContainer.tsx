@@ -39,6 +39,17 @@ const GameContainer = () => {
       try {
         await initSoundEffects();
         
+        // Ensure dialogue is visible immediately
+        const dialogueBox = document.querySelector('.dialogue-box');
+        const choicesContainer = document.querySelector('.choices-container');
+        
+        if (dialogueBox) {
+          dialogueBox.classList.add('visible');
+        }
+        if (choicesContainer) {
+          choicesContainer.classList.add('visible');
+        }
+        
         // Fade in initial content
         gsap.fromTo(['.dialogue-box', '.choices-container'], 
           { opacity: 0, y: 20 },

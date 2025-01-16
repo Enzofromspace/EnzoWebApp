@@ -83,8 +83,22 @@ const DialogueBox = () => {
       }
       setDisplayText(fullText);
       setIsAnimating(false);
+      window.dispatchEvent(new CustomEvent('text-animation-complete'));
     } else if (fullText.includes('🎮') || fullText.includes('🔓') || fullText.includes('🎯')) {
       handleEasterEggClick();
+      // Add visual feedback
+      if (dialogueRef.current) {
+        gsap.fromTo(dialogueRef.current,
+          { scale: 1 },
+          { 
+            scale: 1.05, 
+            duration: 0.2, 
+            yoyo: true, 
+            repeat: 1,
+            ease: 'power2.out'
+          }
+        );
+      }
     }
   };
 
@@ -93,7 +107,11 @@ const DialogueBox = () => {
   return (
     <div 
       ref={dialogueRef} 
-      className={`dialogue-box ${isAnimating ? 'clickable' : ''}`}
+      className={`dialogue-box ${isAnimating ? 'clickable' : ''} ${
+        fullText.includes('🎮') || fullText.includes('🔓') || fullText.includes('🎯') 
+          ? 'easter-egg' 
+          : ''
+      }`}
       onClick={handleClick}
       style={{ 
         cursor: (isAnimating || fullText.includes('🎮') || fullText.includes('🔓') || fullText.includes('🎯')) 

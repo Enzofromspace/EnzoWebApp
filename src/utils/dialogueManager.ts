@@ -1,14 +1,20 @@
 import dialogueContent from '@/data/dialogueContent.json';
 import { playClickSound } from './soundEffects';
+import { initSnakeGame } from './snakeGame';
 
 export interface DialogueChoice {
   text: string;
   nextNode: string;
 }
 
+// Add new types for callbacks
+type DialogueCallback = () => void;
+
 interface DialogueNode {
   text: string;
   choices?: DialogueChoice[];
+  callback?: DialogueCallback;
+  isEndNode?: boolean;
 }
 
 interface DialogueTree {
@@ -17,9 +23,91 @@ interface DialogueTree {
 
 export type ContentType = 'thoughts' | 'jokes' | 'quotes' | 'easter_eggs';
 
+// Add callback registry
+const dialogueCallbacks: Record<string, DialogueCallback> = {
+  get_to_know_end: () => {
+    // Display resume
+    const modal = document.createElement('div');
+    modal.className = 'resume-modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <img src="/images/online_EnzoCarlettiCV.2025.png" alt="Resume" />
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const closeBtn = modal.querySelector('.close-button');
+    closeBtn?.addEventListener('click', () => modal.remove());
+  },
+  
+  work_with_end: () => {
+    // Display intake form
+    const formModal = document.createElement('div');
+    formModal.className = 'form-modal';
+    formModal.innerHTML = `
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <form id="intake-form">
+          <h2>Work With Enzo</h2>
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Email" required />
+          <select required>
+            <option value="">Select Service</option>
+            <option value="agency">Marketing Agency</option>
+            <option value="consultation">Marketing Consultation</option>
+            <option value="support">Project Support</option>
+          </select>
+          <textarea placeholder="Tell me about your project"></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(formModal);
+    
+    const closeBtn = formModal.querySelector('.close-button');
+    closeBtn?.addEventListener('click', () => formModal.remove());
+    
+    const form = formModal.querySelector('#intake-form');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Handle form submission
+      formModal.remove();
+    });
+  },
+  
+  kill_time_end: () => {
+    // Initialize Snake game
+    const gameModal = document.createElement('div');
+    gameModal.className = 'game-modal';
+    gameModal.innerHTML = `
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <canvas id="snake-game" width="400" height="400"></canvas>
+        <div class="game-controls">
+          <button id="start-game">Start Game</button>
+          <span class="score">Score: 0</span>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(gameModal);
+    
+    const closeBtn = gameModal.querySelector('.close-button');
+    closeBtn?.addEventListener('click', () => {
+      gameModal.remove();
+      // Reset to kill_time node instead of home
+      DialogueManager.getInstance().setNode('kill_time');
+    });
+    
+    // Initialize snake game
+    initSnakeGame();
+  }
+};
+
+// Update dialogueTree to include callbacks
 const dialogueTree: DialogueTree = {
   "start": {
-    text: "Welcome internet traveler.\nChoose your path:",
+    text: "Welcome internet traveler. Choose your path:",
     choices: [
       { text: "Get to Know Enzo", nextNode: "get_to_know" },
       { text: "Work With Enzo", nextNode: "work_with" },
@@ -35,7 +123,9 @@ const dialogueTree: DialogueTree = {
     ]
   },
   "get_to_know_end": {
-    text: "I hope you'll find my creator's experience intriguing"
+    text: "I hope you'll find my creator's experience intriguing",
+    callback: dialogueCallbacks.get_to_know_end,
+    isEndNode: true
   },
   "get_to_know_end2": {
     text: "Oof. Harsh choice. I hear Enzo's pretty weird online...much cooler in person."
@@ -52,15 +142,31 @@ const dialogueTree: DialogueTree = {
     ]
   },
   "work_with_end": {
-    text: "I look forward to working with you more!"
+    text: "I look forward to working with you more!",
+    callback: dialogueCallbacks.work_with_end,
+    isEndNode: true
   },
   "kill_time": {
-    text: "Ticking away the moments that make up a dull day.",
+    text: "How would you like to spend your time?",
     choices: [
-      { text: "Tell me a joke", nextNode: "tell_joke" },
-      { text: "Share a quote", nextNode: "share_quote" },
-      { text: "Random thought", nextNode: "share_thought" }
+      {
+        text: "Let's play Snake! 🐍",
+        nextNode: "kill_time_snake"
+      },
+      {
+        text: "Tell me a joke",
+        nextNode: "tell_joke"
+      },
+      {
+        text: "Share a quote",
+        nextNode: "share_quote"
+      }
     ]
+  },
+  "kill_time_snake": {
+    text: "Get ready to play! Use arrow keys to control the snake.",
+    callback: dialogueCallbacks.kill_time_end,
+    isEndNode: true
   },
   "tell_joke": {
     text: "Why did the AI cross the road? To get to the other dataset!"
@@ -70,6 +176,11 @@ const dialogueTree: DialogueTree = {
   },
   "share_thought": {
     text: "What if consciousness is just the universe trying to understand itself?"
+  },
+  "kill_time_end": {
+    text: "Let's play a game!",
+    callback: dialogueCallbacks.kill_time_end,
+    isEndNode: true
   }
 };
 
@@ -92,7 +203,12 @@ class DialogueManager {
   private currentHistoryIndex: number = 0;
 
   // Private constructor for singleton pattern
-  private constructor() {}
+  private constructor() {
+    // Show initial greeting for 8 seconds, then start cycle
+    setTimeout(() => {
+      this.startContentCycle();
+    }, DialogueManager.CYCLE_DELAY);
+  }
 
   // State management methods
   private startContentCycle() {
@@ -103,24 +219,25 @@ class DialogueManager {
       if (!this.isAutoPlaying) return;
       
       const contentType = this.contentCycle[this.currentCycleIndex];
-      this.currentText = this.getRandomContent(dialogueContent[contentType]);
+      const content = dialogueContent[contentType];
+      this.currentText = this.getRandomContent(content);
+      
+      // Add clickable class for easter eggs
+      if (contentType === 'easter_eggs') {
+        document.querySelector('.dialogue-box')?.classList.add('easter-egg');
+      } else {
+        document.querySelector('.dialogue-box')?.classList.remove('easter-egg');
+      }
       
       window.dispatchEvent(new CustomEvent('dialogue-update'));
       
       this.currentCycleIndex = (this.currentCycleIndex + 1) % this.contentCycle.length;
+      
+      // Schedule next update
+      this.cycleTimeout = setTimeout(cycleContent, DialogueManager.CYCLE_DELAY);
     };
 
-    // Start the cycle
     cycleContent();
-
-    // Listen for text animation completion to schedule next cycle
-    const handleAnimationComplete = () => {
-      if (this.isAutoPlaying) {
-        this.cycleTimeout = setTimeout(cycleContent, DialogueManager.CYCLE_DELAY);
-      }
-    };
-
-    window.addEventListener('text-animation-complete', handleAnimationComplete);
   }
 
   private stopContentCycle() {
@@ -160,26 +277,21 @@ class DialogueManager {
     if (choiceIndex >= 0 && choiceIndex < choices.length) {
       const nextNode = choices[choiceIndex].nextNode;
       
-      // Update history when making a choice
+      // Update history
       this.nodeHistory = this.nodeHistory.slice(0, this.currentHistoryIndex + 1);
       this.nodeHistory.push(nextNode);
       this.currentHistoryIndex = this.nodeHistory.length - 1;
       
       this.currentNode = nextNode;
+      const currentNodeData = dialogueTree[nextNode];
 
-      switch (nextNode) {
-        case 'tell_joke':
-          this.currentText = this.getRandomContent(dialogueContent.jokes);
-          break;
-        case 'share_quote':
-          this.currentText = this.getRandomContent(dialogueContent.quotes);
-          break;
-        case 'share_thought':
-          this.currentText = this.getRandomContent(dialogueContent.thoughts);
-          break;
-        default:
-          this.currentText = dialogueTree[nextNode]?.text || "Something went wrong...";
+      // Execute callback if it exists and is an end node
+      if (currentNodeData.isEndNode && currentNodeData.callback) {
+        currentNodeData.callback();
       }
+
+      // Update text based on node type
+      this.currentText = currentNodeData?.text || "Something went wrong...";
       
       window.dispatchEvent(new CustomEvent('dialogue-update'));
     }
@@ -225,6 +337,13 @@ class DialogueManager {
       this.currentText = dialogueTree[this.currentNode].text;
       window.dispatchEvent(new CustomEvent('dialogue-update'));
     }
+  }
+
+  // Add new method to set current node
+  public setNode(node: string): void {
+    this.currentNode = node;
+    this.currentText = dialogueTree[node].text;
+    window.dispatchEvent(new CustomEvent('dialogue-update'));
   }
 }
 
