@@ -54,11 +54,13 @@ body {
   right: 40px;
   top: 50%;
   transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  width: min(250px, calc(100% - 80px));
+  width: min(800px, calc(100% - 80px));
   padding: 0 10px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .choice-box {
@@ -106,8 +108,10 @@ body {
     transform: translateX(50%);
     width: 90%;
     max-width: 400px;
+    grid-template-columns: 1fr;
     gap: 12px;
     padding: 0;
+    max-height: 60vh;
   }
 
   .choice-box {
@@ -235,8 +239,8 @@ body {
 }
 
 .navigation-buttons {
+  grid-column: 1 / -1; /* Span all columns */
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 15px;
   margin-top: 20px;
@@ -273,6 +277,7 @@ body {
   }
   
   .navigation-buttons {
+    margin-top: 12px;
     gap: 10px;
   }
 }
@@ -349,4 +354,303 @@ body {
 .dialogue-box.easter-egg:hover {
   transform: scale(1.02);
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* Add these styles */
+.choice-box.social-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  height: 100%;
+  min-height: 150px;
+  justify-content: space-between;
+}
+
+.social-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: auto;
+}
+
+.social-icon {
+  font-size: 1.5em;
+  margin: 5px 0;
+}
+
+.social-description {
+  font-size: 0.8em;
+  opacity: 0.9;
+  line-height: 1.4;
+  margin-top: auto;
+}
+
+.choice-box.social-choice:hover {
+  transform: scale(1.05);
+  opacity: 1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .choice-box.social-choice {
+    padding: 15px;
+    min-height: 120px;
+  }
+  
+  .social-title {
+    font-size: 0.9em;
+  }
+  
+  .social-icon {
+    font-size: 1.2em;
+  }
+  
+  .social-description {
+    font-size: 0.7em;
+  }
+}
+
+/* Add scrollbar styling */
+.choices-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.choices-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.choices-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.choices-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Project Details Modal */
+.project-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.project-details-modal .modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  color: #00ff00;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 2rem;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  position: relative;
+  border: 2px solid #00ff00;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+  white-space: pre-wrap;
+}
+
+.project-details-modal .modal-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.project-details-modal .exit-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #00ff00;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: 1px solid #00ff00;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.project-details-modal .exit-button:hover {
+  background: #00ff00;
+  color: black;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.project-details-modal .markdown-content {
+  line-height: 1.8;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  white-space: pre-wrap;
+}
+
+.project-details-modal h1,
+.project-details-modal h2,
+.project-details-modal h3 {
+  color: #00ff00;
+  font-family: 'Press Start 2P', monospace;
+  margin: 1.5em 0 1em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.project-details-modal hr {
+  border: none;
+  border-top: 1px solid #00ff00;
+  margin: 2em 0;
+}
+
+.project-details-modal ul {
+  list-style-type: none;
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.project-details-modal ul li {
+  margin: 0.8em 0;
+  position: relative;
+}
+
+.project-details-modal ul li::before {
+  content: '>';
+  color: #00ff00;
+  position: absolute;
+  left: -1.5em;
+  font-weight: bold;
+}
+
+.project-details-modal a {
+  color: #00ff00;
+  text-decoration: none;
+  border-bottom: 1px solid #00ff00;
+  padding-bottom: 2px;
+  transition: all 0.3s ease;
+}
+
+.project-details-modal a:hover {
+  background: #00ff00;
+  color: black;
+  padding: 0 4px;
+}
+
+.project-details-modal p:first-child {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9em;
+  margin-bottom: 2em;
+}
+
+.project-details-modal strong {
+  color: #00ff00;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Scrollbar styling */
+.project-details-modal .modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.project-details-modal .modal-content::-webkit-scrollbar-track {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.project-details-modal .modal-content::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 4px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .project-details-modal .modal-content {
+    padding: 1.5rem;
+    font-size: 13px;
+  }
+
+  .project-details-modal .markdown-content {
+    line-height: 1.6;
+  }
+
+  .project-details-modal h1,
+  .project-details-modal h2,
+  .project-details-modal h3 {
+    font-size: 0.9em;
+  }
+}
+
+/* Add specific styling for headers and dividers */
+.project-details-modal h2 + hr,
+.project-details-modal h3 + hr {
+  margin-top: 0;
+  margin-bottom: 1.5em;
+}
+
+/* Ensure proper spacing after headers */
+.project-details-modal h1,
+.project-details-modal h2,
+.project-details-modal h3 {
+  margin-bottom: 0.5em;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.resume-modal .modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  padding: 20px;
+  border-radius: 10px;
+  width: 90vw;
+  height: 90vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-modal .resume-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.resume-modal .resume-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform 0.1s ease-out;
+  transform-origin: center center;
+}
+
+.resume-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #00ff00;
+  cursor: pointer;
+  font-size: 24px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.resume-modal .close-button:hover {
+  background: rgba(0, 255, 0, 0.2);
 } 

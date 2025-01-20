@@ -145,6 +145,7 @@ const GameContainer = () => {
             key={index}
             text={choice.text}
             onClick={() => handleChoice(index)}
+            socialLink={choice.socialLink}
           />
         ))}
         <div className="navigation-buttons">

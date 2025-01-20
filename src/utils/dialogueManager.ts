@@ -1,10 +1,19 @@
 import dialogueContent from '@/data/dialogueContent.json';
 import { playClickSound } from './soundEffects';
 import { initSnakeGame } from './snakeGame';
+import { marked } from 'marked';
+import projectDetails from '@/data/project-details.md?raw';
+
+// Configure marked to handle line breaks properly
+marked.setOptions({
+  breaks: true,
+  gfm: true
+});
 
 export interface DialogueChoice {
   text: string;
   nextNode: string;
+  socialLink?: string;
 }
 
 // Add new types for callbacks
@@ -26,19 +35,56 @@ export type ContentType = 'thoughts' | 'jokes' | 'quotes' | 'easter_eggs';
 // Add callback registry
 const dialogueCallbacks: Record<string, DialogueCallback> = {
   get_to_know_end: () => {
-    // Display resume
     const modal = document.createElement('div');
     modal.className = 'resume-modal';
     modal.innerHTML = `
       <div class="modal-content">
         <span class="close-button">&times;</span>
-        <img src="/images/online_EnzoCarlettiCV.2025.png" alt="Resume" />
+        <div class="resume-container">
+          <img src="/images/online_EnzoCarlettiCV.2025.png" alt="Resume" class="resume-image" />
+        </div>
       </div>
     `;
     document.body.appendChild(modal);
     
     const closeBtn = modal.querySelector('.close-button');
-    closeBtn?.addEventListener('click', () => modal.remove());
+    const img = modal.querySelector('.resume-image') as HTMLImageElement;
+    let scale = 1;
+    let isDragging = false;
+    let startX: number, startY: number, translateX = 0, translateY = 0;
+
+    // Add zoom functionality
+    modal.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      scale *= delta;
+      scale = Math.min(Math.max(0.5, scale), 3); // Limit zoom between 0.5x and 3x
+      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    });
+
+    // Add drag functionality
+    img.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+      img.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      img.style.cursor = 'grab';
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      modal.remove();
+    });
   },
   
   work_with_end: () => {
@@ -101,6 +147,29 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     
     // Initialize snake game
     initSnakeGame();
+  },
+  
+  get_to_know_end3: () => {
+    const modal = document.createElement('div');
+    modal.className = 'project-details-modal';
+    
+    // Clean up the markdown content by replacing escaped newlines with actual newlines
+    const cleanContent = projectDetails.replace(/\\n/g, '\n');
+    
+    modal.innerHTML = `
+      <div class="modal-content retro-terminal">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="markdown-content">
+          ${marked.parse(cleanContent)}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    exitBtn?.addEventListener('click', () => modal.remove());
   }
 };
 
@@ -123,15 +192,44 @@ const dialogueTree: DialogueTree = {
     ]
   },
   "get_to_know_end": {
-    text: "I hope you'll find my creator's experience intriguing",
+    text: "This screen is a placeholder TBH. So many better things to click. Go click arround.",
     callback: dialogueCallbacks.get_to_know_end,
     isEndNode: true
   },
   "get_to_know_end2": {
-    text: "Oof. Harsh choice. I hear Enzo's pretty weird online...much cooler in person."
+    text: "Electronic interdependence recreates the world in the image of a global village.",
+    choices: [
+      {
+        text: "YouTube\n🎥\nAI Tutorials for Code, Marketing, and Business.",
+        nextNode: "youtube_social",
+        socialLink: "https://youtube.com"
+      },
+      {
+        text: "LinkedIn\n💼\nWeekly Newsletter on Marketing, Business, or Philosophy.",
+        nextNode: "linkedin_social",
+        socialLink: "https://linkedin.com"
+      },
+      {
+        text: "Twitch\n🎮\nKick back and relax with Enzo. Sometimes live demos or interviews.",
+        nextNode: "twitch_social",
+        socialLink: "https://twitch.tv"
+      },
+      {
+        text: "Twitter\n🐦\nNo real strategy here, only memes and wrestling clips.",
+        nextNode: "twitter_social",
+        socialLink: "https://twitter.com"
+      },
+      {
+        text: "TikTok\n📱\nCreative experiments in audio, video, and editing. Unhinged.",
+        nextNode: "tiktok_social",
+        socialLink: "https://tiktok.com"
+      }
+    ]
   },
   "get_to_know_end3": {
-    text: "A curious mind is often rewarded. Respect."
+    text: "Accessing project documentation...",
+    callback: dialogueCallbacks.get_to_know_end3,
+    isEndNode: true
   },
   "work_with": {
     text: "Enzo is programmed to support three primary tracks. Choose now...",
@@ -197,7 +295,7 @@ class DialogueManager {
   private currentCycleIndex: number = 0;
   private isAutoPlaying: boolean = false;
   private cycleTimeout: NodeJS.Timeout | null = null;
-  private static CYCLE_DELAY = 8000;
+  private static CYCLE_DELAY = 6000;
 
   private nodeHistory: string[] = ['start'];
   private currentHistoryIndex: number = 0;

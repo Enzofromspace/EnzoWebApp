@@ -3,7 +3,17 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), {
+    name: 'markdown-loader',
+    transform(code, id) {
+      if (id.endsWith('.md?raw')) {
+        return {
+          code: `export default ${JSON.stringify(code.replace(/\r\n/g, '\n'))};`,
+          map: null
+        };
+      }
+    }
+  }],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -41,7 +51,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom', '@pixi/react', 'pixi.js'],
   },
-  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg', '**/*.md'],
   json: {
     stringify: true
   }
