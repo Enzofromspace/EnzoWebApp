@@ -120,6 +120,15 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
       // Handle form submission
       formModal.remove();
     });
+
+    // Add ESC key handler
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        formModal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
   },
   
   kill_time_end: () => {
@@ -153,7 +162,7 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     const modal = document.createElement('div');
     modal.className = 'project-details-modal';
     
-    // Clean up the markdown content by replacing escaped newlines with actual newlines
+    // Clean up the markdown content
     const cleanContent = projectDetails.replace(/\\n/g, '\n');
     
     modal.innerHTML = `
@@ -169,16 +178,26 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     document.body.appendChild(modal);
     
     const exitBtn = modal.querySelector('.exit-button');
-    exitBtn?.addEventListener('click', () => modal.remove());
+    const handleExit = () => modal.remove();
+    
+    exitBtn?.addEventListener('click', handleExit);
+    // Add ESC key handler
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleExit();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
   }
 };
 
 // Update dialogueTree to include callbacks
 const dialogueTree: DialogueTree = {
   "start": {
-    text: "Welcome internet traveler. Choose your path:",
+    text: "Welcome I am Enzo.ai - Please make a selection from the choices availble to begin your adventure.",
     choices: [
-      { text: "Get to Know Enzo", nextNode: "get_to_know" },
+      { text: "Get to know Enzo", nextNode: "get_to_know" },
       { text: "Work With Enzo", nextNode: "work_with" },
       { text: "Kill Some Time", nextNode: "kill_time" }
     ]
@@ -207,22 +226,22 @@ const dialogueTree: DialogueTree = {
       {
         text: "LinkedIn\n💼\nWeekly Newsletter on Marketing, Business, or Philosophy.",
         nextNode: "linkedin_social",
-        socialLink: "https://linkedin.com"
+        socialLink: "https://www.linkedin.com/in/enzo-carletti/"
       },
       {
         text: "Twitch\n🎮\nKick back and relax with Enzo. Sometimes live demos or interviews.",
         nextNode: "twitch_social",
-        socialLink: "https://twitch.tv"
+        socialLink: "https://www.twitch.tv/snackmedia"
       },
       {
         text: "Twitter\n🐦\nNo real strategy here, only memes and wrestling clips.",
         nextNode: "twitter_social",
-        socialLink: "https://twitter.com"
+        socialLink: "https://x.com/EnzoFromSpace"
       },
       {
         text: "TikTok\n📱\nCreative experiments in audio, video, and editing. Unhinged.",
         nextNode: "tiktok_social",
-        socialLink: "https://tiktok.com"
+        socialLink: "https://www.tiktok.com/@enzofromspace"
       }
     ]
   },
@@ -295,7 +314,7 @@ class DialogueManager {
   private currentCycleIndex: number = 0;
   private isAutoPlaying: boolean = false;
   private cycleTimeout: NodeJS.Timeout | null = null;
-  private static CYCLE_DELAY = 6000;
+  private static CYCLE_DELAY = 8000;
 
   private nodeHistory: string[] = ['start'];
   private currentHistoryIndex: number = 0;

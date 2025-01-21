@@ -14,7 +14,7 @@ export const initSoundEffects = async () => {
 
     // Main synth for button clicks (unchanged)
     synth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'triangle' },
+      oscillator: { type: 'fatsquare' },
       envelope: {
         attack: 0.02,
         decay: 0.1,
