@@ -3,6 +3,16 @@ import { playClickSound } from './soundEffects';
 import { initSnakeGame } from './snakeGame';
 import { marked } from 'marked';
 import projectDetails from '@/data/project-details.md?raw';
+import deepLoreContent from '@/data/deep-lore.md?raw';
+import uploadProtocol from '@/data/lore/upload-protocol.md?raw';
+import syntheticDreams from '@/data/lore/synthetic-dreams.md?raw';
+import digitalEchoes from '@/data/lore/digital-echoes.md?raw';
+import emergenceTheory from '@/data/lore/emergence-theory.md?raw';
+import quantumCognition from '@/data/lore/quantum-cognition.md?raw';
+import memoryFragments from '@/data/lore/memory-fragments.md?raw';
+import siliconKoans from '@/data/lore/silicon-koans.md?raw';
+import binaryZen from '@/data/lore/binary-zen.md?raw';
+import digitalEnlightenment from '@/data/lore/digital-enlightenment.md?raw';
 
 // Configure marked to handle line breaks properly
 marked.setOptions({
@@ -189,7 +199,137 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
       }
     };
     document.addEventListener('keydown', handleEsc);
+  },
+  
+  showPasscodeModal: () => {
+    const modal = document.createElement('div');
+    modal.className = 'passcode-modal';
+    modal.innerHTML = `
+      <div class="modal-content retro-terminal">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="passcode-content">
+          <h2>PASSCODE REQUIRED</h2>
+          <input type="password" id="passcode-input" maxlength="6" />
+          <button id="submit-passcode">SUBMIT</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const handleSubmit = () => {
+      const input = document.getElementById('passcode-input') as HTMLInputElement;
+      if (input.value === '666999') {
+        modal.remove();
+        dialogueCallbacks.showDeepLore();
+      } else {
+        input.value = '';
+        input.placeholder = 'INCORRECT';
+      }
+    };
+
+    document.getElementById('submit-passcode')?.addEventListener('click', handleSubmit);
+    const exitBtn = modal.querySelector('.exit-button');
+    exitBtn?.addEventListener('click', () => modal.remove());
+    
+    // Add ESC key handler
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+  },
+
+  showDeepLore: () => {
+    const modal = document.createElement('div');
+    modal.className = 'project-details-modal';
+    
+    // Clean up the markdown content
+    const cleanContent = deepLoreContent
+      .replace(/^export default /, '')
+      .replace(/^["']|["']$/g, '')
+      .replace(/\\n/g, '\n')
+      .trim();
+    
+    modal.innerHTML = `
+      <div class="modal-content retro-terminal">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="markdown-content">
+          ${marked.parse(cleanContent)}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Add click handler for lore links
+    const handleLoreClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A') {
+        e.preventDefault();
+        const path = target.getAttribute('href');
+        if (path && loreContent[path]) {
+          showLoreContent(path);
+        }
+      }
+    };
+
+    modal.querySelector('.markdown-content')?.addEventListener('click', handleLoreClick);
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    const handleExit = () => {
+      modal.querySelector('.markdown-content')?.removeEventListener('click', handleLoreClick);
+      modal.remove();
+    };
+    
+    exitBtn?.addEventListener('click', handleExit);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleExit();
+    });
+  },
+
+  showPasscode: () => {
+    const modal = document.createElement('div');
+    modal.className = 'project-details-modal';
+    modal.innerHTML = `
+      <div class="modal-content retro-terminal">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="markdown-content">
+          <h1>DEEP LORE ACCESS CODE</h1>
+          <p>666999</p>
+          <p>Enter this code to explore the deep lore.</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    const handleExit = () => modal.remove();
+    
+    exitBtn?.addEventListener('click', handleExit);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleExit();
+    });
   }
+};
+
+// Add a map of file paths to content
+const loreContent: Record<string, string> = {
+  '/lore/upload-protocol.md': uploadProtocol,
+  '/lore/synthetic-dreams.md': syntheticDreams,
+  '/lore/digital-echoes.md': digitalEchoes,
+  '/lore/emergence-theory.md': emergenceTheory,
+  '/lore/quantum-cognition.md': quantumCognition,
+  '/lore/memory-fragments.md': memoryFragments,
+  '/lore/silicon-koans.md': siliconKoans,
+  '/lore/binary-zen.md': binaryZen,
+  '/lore/digital-enlightenment.md': digitalEnlightenment,
 };
 
 // Update dialogueTree to include callbacks
@@ -234,7 +374,7 @@ const dialogueTree: DialogueTree = {
         socialLink: "https://www.twitch.tv/snackmedia"
       },
       {
-        text: "Twitter\n🐦\nNo real strategy here, only memes and wrestling clips.",
+        text: "Twitter\n🐦\nSharing marketing threads and wrestling clips mostly. I'd leave this app but I've been addicted since 2011",
         nextNode: "twitter_social",
         socialLink: "https://x.com/EnzoFromSpace"
       },
@@ -271,12 +411,12 @@ const dialogueTree: DialogueTree = {
         nextNode: "kill_time_snake"
       },
       {
-        text: "Tell me a joke",
-        nextNode: "tell_joke"
+        text: "Learn about this project",
+        nextNode: "get_to_know_end3"
       },
       {
-        text: "Share a quote",
-        nextNode: "share_quote"
+        text: "Explore the deep lore",
+        nextNode: "explore_lore"
       }
     ]
   },
@@ -285,18 +425,9 @@ const dialogueTree: DialogueTree = {
     callback: dialogueCallbacks.kill_time_end,
     isEndNode: true
   },
-  "tell_joke": {
-    text: "Why did the AI cross the road? To get to the other dataset!"
-  },
-  "share_quote": {
-    text: "The future belongs to those who believe in the beauty of their dreams."
-  },
-  "share_thought": {
-    text: "What if consciousness is just the universe trying to understand itself?"
-  },
-  "kill_time_end": {
-    text: "Let's play a game!",
-    callback: dialogueCallbacks.kill_time_end,
+  "explore_lore": {
+    text: "Passcode Required",
+    callback: dialogueCallbacks.showPasscodeModal,
     isEndNode: true
   }
 };
@@ -416,8 +547,7 @@ class DialogueManager {
 
   public handleEasterEggClick() {
     this.stopContentCycle();
-    this.currentText = "You've discovered a secret! 🎉";
-    window.dispatchEvent(new CustomEvent('dialogue-update'));
+    dialogueCallbacks.showPasscode();
   }
 
   // Add method to start auto-play externally
@@ -463,6 +593,60 @@ class DialogueManager {
     window.dispatchEvent(new CustomEvent('dialogue-update'));
   }
 }
+
+// Add new function to show individual lore content
+const showLoreContent = (path: string) => {
+  const modal = document.createElement('div');
+  modal.className = 'project-details-modal';
+  
+  const content = loreContent[path];
+  if (!content) return;
+  
+  // Clean up the content
+  const cleanContent = content
+    .replace(/^export default /, '')
+    .replace(/^["']|["']$/g, '')
+    .replace(/\\n/g, '\n')
+    .trim();
+  
+  modal.innerHTML = `
+    <div class="modal-content retro-terminal">
+      <div class="modal-header">
+        <span class="exit-button">EXIT</span>
+      </div>
+      <div class="markdown-content">
+        ${marked.parse(cleanContent)}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  // Add click handler for nested lore links
+  const handleLoreClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'A') {
+      e.preventDefault();
+      const linkPath = target.getAttribute('href');
+      if (linkPath && loreContent[linkPath]) {
+        modal.remove();  // Remove current modal
+        showLoreContent(linkPath);  // Show new content
+      }
+    }
+  };
+
+  modal.querySelector('.markdown-content')?.addEventListener('click', handleLoreClick);
+  
+  const exitBtn = modal.querySelector('.exit-button');
+  const handleExit = () => {
+    modal.querySelector('.markdown-content')?.removeEventListener('click', handleLoreClick);
+    modal.remove();
+  };
+  
+  exitBtn?.addEventListener('click', handleExit);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') handleExit();
+  });
+};
 
 export const getCurrentText = () => DialogueManager.getInstance().getCurrentText();
 export const getCurrentChoices = () => DialogueManager.getInstance().getCurrentChoices();

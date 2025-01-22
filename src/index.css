@@ -447,7 +447,7 @@ body {
 }
 
 .project-details-modal .modal-content {
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.233);
   color: #00ff00;
   width: 90%;
   max-width: 800px;
@@ -607,7 +607,7 @@ body {
 }
 
 .resume-modal .modal-content {
-  background: rgba(0, 0, 0, 0.95);
+  background: rgb(0, 0, 0);
   padding: 20px;
   border-radius: 10px;
   width: 90vw;
@@ -653,4 +653,59 @@ body {
 
 .resume-modal .close-button:hover {
   background: rgba(0, 255, 0, 0.2);
+}
+
+.passcode-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.passcode-modal .modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  padding: 2rem;
+  border: 2px solid #00ff00;
+  color: #00ff00;
+}
+
+.passcode-modal input {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 0.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  text-align: center;
+  margin: 1rem 0;
+  width: 200px;
+}
+
+.passcode-modal button {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  transition: all 0.3s ease;
+}
+
+.passcode-modal button:hover {
+  background: #00ff00;
+  color: black;
+}
+
+.continue-game-btn {
+  background: #00ff00;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  font-family: 'Press Start 2P', monospace;
+  cursor: pointer;
 } 

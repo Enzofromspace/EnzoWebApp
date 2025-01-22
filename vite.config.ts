@@ -7,8 +7,13 @@ export default defineConfig({
     name: 'markdown-loader',
     transform(code, id) {
       if (id.endsWith('.md?raw')) {
+        const cleanContent = code
+          .replace(/^export default /, '')
+          .replace(/^["']|["']$/g, '')
+          .replace(/\\n/g, '\n')
+          .trim();
         return {
-          code: `export default ${JSON.stringify(code.replace(/\r\n/g, '\n'))};`,
+          code: `export default ${JSON.stringify(cleanContent)}`,
           map: null
         };
       }

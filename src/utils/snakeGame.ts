@@ -75,6 +75,30 @@ export const initSnakeGame = () => {
     }, 500);
   };
 
+  const checkAchievement = () => {
+    if (score === 50) {
+      if (gameInterval) clearInterval(gameInterval);
+      
+      ctx.fillStyle = '#00ff00';
+      ctx.font = '16px "Press Start 2P"';
+      ctx.textAlign = 'center';
+      ctx.fillText('Achievement Unlocked!', GAME_SIZE / 2, GAME_SIZE / 2 - 40);
+      ctx.fillText('Deep Lore Passcode:', GAME_SIZE / 2, GAME_SIZE / 2);
+      ctx.fillText('666999', GAME_SIZE / 2, GAME_SIZE / 2 + 40);
+      
+      // Add continue button
+      const continueBtn = document.createElement('button');
+      continueBtn.textContent = 'Continue Game';
+      continueBtn.className = 'continue-game-btn';
+      document.querySelector('.game-controls')?.appendChild(continueBtn);
+      
+      continueBtn.onclick = () => {
+        continueBtn.remove();
+        gameInterval = setInterval(gameLoop, 100);
+      };
+    }
+  };
+
   const moveSnake = () => {
     const head = { ...snake[0] };
     head.x += direction.x;
@@ -98,6 +122,7 @@ export const initSnakeGame = () => {
     if (head.x === food.x && head.y === food.y) {
       score += 10;
       document.querySelector('.score')!.textContent = `Score: ${score}`;
+      checkAchievement();
       food = {
         x: Math.floor(Math.random() * (GAME_SIZE / GRID_SIZE)),
         y: Math.floor(Math.random() * (GAME_SIZE / GRID_SIZE))

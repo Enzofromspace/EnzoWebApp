@@ -1,4 +1,3 @@
-January 15, 2024
 
 CONFIDENTIAL PROJECT REPORT
 ---------------------------
