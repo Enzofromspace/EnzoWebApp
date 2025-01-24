@@ -247,7 +247,6 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     const modal = document.createElement('div');
     modal.className = 'project-details-modal';
     
-    // Clean up the markdown content
     const cleanContent = deepLoreContent
       .replace(/^export default /, '')
       .replace(/^["']|["']$/g, '')
@@ -264,16 +263,21 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
         </div>
       </div>
     `;
+    
+    modal.classList.add('tv-animation');
     document.body.appendChild(modal);
     
-    // Add click handler for lore links
     const handleLoreClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target.tagName === 'A') {
         e.preventDefault();
         const path = target.getAttribute('href');
         if (path && loreContent[path]) {
-          showLoreContent(path);
+          modal.classList.add('tv-off');
+          setTimeout(() => {
+            modal.remove();
+            showLoreContent(path);
+          }, 500);
         }
       }
     };
@@ -282,8 +286,8 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     
     const exitBtn = modal.querySelector('.exit-button');
     const handleExit = () => {
-      modal.querySelector('.markdown-content')?.removeEventListener('click', handleLoreClick);
-      modal.remove();
+      modal.classList.add('tv-off');
+      setTimeout(() => modal.remove(), 500);
     };
     
     exitBtn?.addEventListener('click', handleExit);
@@ -602,7 +606,6 @@ const showLoreContent = (path: string) => {
   const content = loreContent[path];
   if (!content) return;
   
-  // Clean up the content
   const cleanContent = content
     .replace(/^export default /, '')
     .replace(/^["']|["']$/g, '')
@@ -613,36 +616,36 @@ const showLoreContent = (path: string) => {
     <div class="modal-content retro-terminal">
       <div class="modal-header">
         <span class="exit-button">EXIT</span>
+        <span class="back-button">BACK</span>
       </div>
       <div class="markdown-content">
         ${marked.parse(cleanContent)}
       </div>
     </div>
   `;
-  document.body.appendChild(modal);
   
-  // Add click handler for nested lore links
-  const handleLoreClick = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'A') {
-      e.preventDefault();
-      const linkPath = target.getAttribute('href');
-      if (linkPath && loreContent[linkPath]) {
-        modal.remove();  // Remove current modal
-        showLoreContent(linkPath);  // Show new content
-      }
-    }
+  // Add TV flicker animation class
+  modal.classList.add('tv-animation');
+  document.body.appendChild(modal);
+
+  const exitBtn = modal.querySelector('.exit-button');
+  const backBtn = modal.querySelector('.back-button');
+  
+  const handleExit = () => {
+    modal.classList.add('tv-off');
+    setTimeout(() => modal.remove(), 500);
   };
 
-  modal.querySelector('.markdown-content')?.addEventListener('click', handleLoreClick);
-  
-  const exitBtn = modal.querySelector('.exit-button');
-  const handleExit = () => {
-    modal.querySelector('.markdown-content')?.removeEventListener('click', handleLoreClick);
-    modal.remove();
+  const handleBack = () => {
+    modal.classList.add('tv-off');
+    setTimeout(() => {
+      modal.remove();
+      dialogueCallbacks.showDeepLore();
+    }, 500);
   };
   
   exitBtn?.addEventListener('click', handleExit);
+  backBtn?.addEventListener('click', handleBack);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') handleExit();
   });

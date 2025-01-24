@@ -464,6 +464,7 @@ body {
 .project-details-modal .modal-header {
   display: flex;
   justify-content: flex-end;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -482,6 +483,23 @@ body {
 }
 
 .project-details-modal .exit-button:hover {
+  background: #00ff00;
+  color: black;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.project-details-modal .back-button {
+  color: #00ff00;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: 1px solid #00ff00;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.project-details-modal .back-button:hover {
   background: #00ff00;
   color: black;
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
@@ -708,4 +726,51 @@ body {
   margin-top: 1rem;
   font-family: 'Press Start 2P', monospace;
   cursor: pointer;
+}
+
+/* Add TV animation styles */
+.tv-animation {
+  animation: tvOn 0.5s ease-out;
+}
+
+.tv-off {
+  animation: tvOff 0.5s ease-out;
+}
+
+@keyframes tvOn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: brightness(0) blur(10px);
+  }
+  50% {
+    filter: brightness(2) blur(5px);
+  }
+  75% {
+    filter: brightness(1.5) blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) blur(0);
+  }
+}
+
+@keyframes tvOff {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) blur(0);
+  }
+  25% {
+    filter: brightness(2) blur(0);
+  }
+  50% {
+    filter: brightness(0.5) blur(5px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: brightness(0) blur(10px);
+  }
 } 
