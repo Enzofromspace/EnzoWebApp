@@ -284,7 +284,6 @@ body {
 
 /* Modal Styles */
 .resume-modal,
-.form-modal,
 .game-modal {
   position: fixed;
   top: 0;
@@ -314,22 +313,6 @@ body {
   top: 10px;
   cursor: pointer;
   font-size: 24px;
-}
-
-/* Form Styles */
-#intake-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  min-width: 300px;
-}
-
-#intake-form input,
-#intake-form select,
-#intake-form textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 /* Snake Game Styles */
@@ -772,5 +755,23 @@ body {
     opacity: 0;
     transform: scale(0.95);
     filter: brightness(0) blur(10px);
+  }
+}
+
+/* Add gif styling to dialogue box */
+.dialogue-box .dialogue-gif {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+/* Adjust for mobile */
+@media (max-width: 768px) {
+  .dialogue-box .dialogue-gif {
+    max-height: 100px;
   }
 } 

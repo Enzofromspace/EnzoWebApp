@@ -306,7 +306,7 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
         </div>
         <div class="markdown-content">
           <h1>DEEP LORE ACCESS CODE</h1>
-          <p>666999</p>
+          <h2>666999<h2>
           <p>Enter this code to explore the deep lore.</p>
         </div>
       </div>
@@ -397,14 +397,30 @@ const dialogueTree: DialogueTree = {
   "work_with": {
     text: "Enzo is programmed to support three primary tracks. Choose now...",
     choices: [
-      { text: "I'm ready for a marketing agency", nextNode: "work_with_end" },
-      { text: "I need marketing consultation", nextNode: "work_with_end" },
-      { text: "Support this project", nextNode: "work_with_end" }
+      { text: "I need a marketing agency", nextNode: "work_with_1" },
+      { text: "I need Public Relations Support", nextNode: "work_with_2" },
+      { text: "Support this project", nextNode: "work_with_3" },
     ]
   },
-  "work_with_end": {
-    text: "I look forward to working with you more!",
-    callback: dialogueCallbacks.work_with_end,
+  "work_with_1": {
+    text: "Enzo works with Foundation, a content marketing agency that specializes in B2B lead growth and SEO.",
+    choices: [
+      { text: "Watch our splash reel", nextNode: "splash_reel" },
+      { text: "Contact Foundation", nextNode: "contact_foundation" },
+      { text: "Explore our insights", nextNode: "foundation_blog" },
+    ]
+  },
+  "work_with_2": {
+    text: "Some people say you have to use force to change minds. I prefer to use communication.",
+    choices: [
+      { text: "Book Digital PR consultation.", nextNode: "pr_form_modal" },
+      { text: "I don't know what I need, but they keep asking me to do PR.", nextNode: "PR_modal" },
+      { text: "Book publicity consultation", nextNode: "pr_form_modal" },
+    ]
+  },
+  "work_with_3": {
+    text: "You're a gem. All support is appreciated. I'm not sure what I need, but I'm sure you'll help me figure it out.",
+    callback: dialogueCallbacks.get_to_know_end3,
     isEndNode: true
   },
   "kill_time": {
@@ -430,7 +446,7 @@ const dialogueTree: DialogueTree = {
     isEndNode: true
   },
   "explore_lore": {
-    text: "Passcode Required",
+    text: `<img src="/images/giphy.gif" class="dialogue-gif" alt="passcode required" />`,
     callback: dialogueCallbacks.showPasscodeModal,
     isEndNode: true
   }
