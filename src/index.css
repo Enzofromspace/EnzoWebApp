@@ -774,4 +774,138 @@ body {
   .dialogue-box .dialogue-gif {
     max-height: 100px;
   }
+}
+
+/* Foundation Splash Reel Modal */
+.splash-reel-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.splash-reel-modal .modal-content.foundation-theme {
+  background: rgba(255, 255, 255, 0.9);
+  color: #FF6B35;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  position: relative;
+  border: 2px solid #FF6B35;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+.splash-reel-modal .exit-button {
+  color: #FF6B35;
+  border: 2px solid #FF6B35;
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+}
+
+.splash-reel-modal .exit-button:hover {
+  background: #FF6B35;
+  color: white;
+}
+
+.splash-reel-modal h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #FF6B35;
+}
+
+.splash-reel-modal .video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.splash-reel-modal .video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.splash-reel-modal .contact-button {
+  display: block;
+  width: fit-content;
+  margin: 2rem auto 0;
+  padding: 1rem 2rem;
+  background: #FF6B35;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.splash-reel-modal .contact-button:hover {
+  background: #ff8255;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .splash-reel-modal .modal-content.foundation-theme {
+    padding: 1rem;
+    width: 95%;
+  }
+  
+  .splash-reel-modal h1 {
+    font-size: 1.5rem;
+  }
+  
+  .splash-reel-modal .contact-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* Update exit button styling for splash reel */
+.splash-reel-modal .exit-button {
+  color: #FF6B35;
+  border: 2px solid #FF6B35;
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+}
+
+/* Increase paragraph text size across all modals */
+.project-details-modal p,
+.splash-reel-modal p,
+.markdown-content p {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 1.2em;
+}
+
+/* Update mobile styles */
+@media (max-width: 768px) {
+  .project-details-modal p,
+  .splash-reel-modal p,
+  .markdown-content p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  .splash-reel-modal .exit-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
 } 

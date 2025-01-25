@@ -320,6 +320,50 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') handleExit();
     });
+  },
+
+  showSplashReel: () => {
+    const modal = document.createElement('div');
+    modal.className = 'splash-reel-modal';
+    modal.innerHTML = `
+      <div class="modal-content foundation-theme">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="splash-content">
+          <h1>Foundation kickstarts marketing engines</h1>
+          <div class="video-container">
+            <iframe 
+              width="560" 
+              height="315" 
+              src="https://www.youtube.com/embed/Glu5bS6QLTo?si=5UFD_3tx-LtkMrH3" 
+              title="YouTube video player" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen
+            ></iframe>
+          </div>
+          <a href="https://foundationinc.co/contact/" target="_blank" rel="noopener noreferrer" class="contact-button">
+            Contact Foundation
+          </a>
+        </div>
+      </div>
+    `;
+    
+    modal.classList.add('tv-animation');
+    document.body.appendChild(modal);
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    const handleExit = () => {
+      modal.classList.add('tv-off');
+      setTimeout(() => modal.remove(), 500);
+    };
+    
+    exitBtn?.addEventListener('click', handleExit);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleExit();
+    });
   }
 };
 
@@ -406,16 +450,16 @@ const dialogueTree: DialogueTree = {
     text: "Enzo works with Foundation, a content marketing agency that specializes in B2B lead growth and SEO.",
     choices: [
       { text: "Watch our splash reel", nextNode: "splash_reel" },
-      { text: "Contact Foundation", nextNode: "contact_foundation" },
+      { text: "Read Foundation Case Studies", nextNode: "case_studies" },
       { text: "Explore our insights", nextNode: "foundation_blog" },
     ]
   },
   "work_with_2": {
     text: "Some people say you have to use force to change minds. I prefer to use communication.",
     choices: [
-      { text: "Book Digital PR consultation.", nextNode: "pr_form_modal" },
-      { text: "I don't know what I need, but they keep asking me to do PR.", nextNode: "PR_modal" },
-      { text: "Book publicity consultation", nextNode: "pr_form_modal" },
+      { text: "Book a Digital PR consultation", nextNode: "pr_form_modal" },
+      { text: "I don't know what I need, but they keep asking me to do PR", nextNode: "PR_modal" },
+      { text: "Book a publicity consultation", nextNode: "pr_form_modal" },
     ]
   },
   "work_with_3": {
@@ -448,6 +492,25 @@ const dialogueTree: DialogueTree = {
   "explore_lore": {
     text: `<img src="/images/giphy.gif" class="dialogue-gif" alt="passcode required" />`,
     callback: dialogueCallbacks.showPasscodeModal,
+    isEndNode: true
+  },
+  "splash_reel": {
+    text: "Loading Foundation's splash reel...",
+    callback: dialogueCallbacks.showSplashReel,
+    isEndNode: true
+  },
+  "case_studies": {
+    text: "Opening Foundation case studies...",
+    callback: () => {
+      window.open('https://foundationinc.co/case-studies', '_blank');
+    },
+    isEndNode: true
+  },
+  "foundation_blog": {
+    text: "Opening Foundation Lab...",
+    callback: () => {
+      window.open('https://foundationinc.co/lab/', '_blank');
+    },
     isEndNode: true
   }
 };
