@@ -364,6 +364,126 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') handleExit();
     });
+  },
+
+  // Add helper function to load Calendly script
+  initCalendly: () => {
+    const script = document.createElement('script');
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return new Promise((resolve) => {
+      script.onload = () => {
+        // @ts-ignore - Calendly is added to window
+        if (window.Calendly) {
+          resolve(true);
+        }
+      };
+    });
+  },
+
+  showDPRCalendly: async () => {
+    const modal = document.createElement('div');
+    modal.className = 'splash-reel-modal';
+    modal.innerHTML = `
+      <div class="modal-content foundation-theme">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="calendly-container">
+          <div 
+            class="calendly-inline-widget" 
+            data-url="https://calendly.com/enzo-foundationinc/30min"
+          ></div>
+        </div>
+      </div>
+    `;
+    
+    modal.classList.add('tv-animation');
+    document.body.appendChild(modal);
+    
+    // Initialize Calendly after modal is added to DOM
+    await dialogueCallbacks.initCalendly();
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    const handleExit = () => {
+      modal.classList.add('tv-off');
+      setTimeout(() => modal.remove(), 500);
+    };
+    
+    exitBtn?.addEventListener('click', handleExit);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleExit();
+    });
+  },
+
+  showPRCalendly: async () => {
+    const modal = document.createElement('div');
+    modal.className = 'splash-reel-modal';
+    modal.innerHTML = `
+      <div class="modal-content foundation-theme">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="calendly-container">
+          <div 
+            class="calendly-inline-widget" 
+            data-url="https://calendly.com/enzo-foundationinc/30-minute-digital-pr-consult-clone-1"
+          ></div>
+        </div>
+      </div>
+    `;
+    
+    modal.classList.add('tv-animation');
+    document.body.appendChild(modal);
+    
+    await dialogueCallbacks.initCalendly();
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    const handleExit = () => {
+      modal.classList.add('tv-off');
+      setTimeout(() => modal.remove(), 500);
+    };
+    
+    exitBtn?.addEventListener('click', handleExit);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleExit();
+    });
+  },
+
+  showPublicityCalendly: async () => {
+    const modal = document.createElement('div');
+    modal.className = 'splash-reel-modal';
+    modal.innerHTML = `
+      <div class="modal-content foundation-theme">
+        <div class="modal-header">
+          <span class="exit-button">EXIT</span>
+        </div>
+        <div class="calendly-container">
+          <div 
+            class="calendly-inline-widget" 
+            data-url="https://calendly.com/enzo-foundationinc/30-minute-digital-pr-consult-clone"
+          ></div>
+        </div>
+      </div>
+    `;
+    
+    modal.classList.add('tv-animation');
+    document.body.appendChild(modal);
+    
+    await dialogueCallbacks.initCalendly();
+    
+    const exitBtn = modal.querySelector('.exit-button');
+    const handleExit = () => {
+      modal.classList.add('tv-off');
+      setTimeout(() => modal.remove(), 500);
+    };
+    
+    exitBtn?.addEventListener('click', handleExit);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleExit();
+    });
   }
 };
 
@@ -422,12 +542,12 @@ const dialogueTree: DialogueTree = {
         socialLink: "https://www.twitch.tv/snackmedia"
       },
       {
-        text: "Twitter\n🐦\nSharing marketing threads and wrestling clips mostly. I'd leave this app but I've been addicted since 2011",
+        text: "Twitter\n🐦\nI'd leave this app but I've been addicted since 2011.",
         nextNode: "twitter_social",
         socialLink: "https://x.com/EnzoFromSpace"
       },
       {
-        text: "TikTok\n📱\nCreative experiments in audio, video, and editing. Unhinged.",
+        text: "TikTok\n📱\nCreative experiments in audio, video, editing and code.",
         nextNode: "tiktok_social",
         socialLink: "https://www.tiktok.com/@enzofromspace"
       }
@@ -457,9 +577,9 @@ const dialogueTree: DialogueTree = {
   "work_with_2": {
     text: "Some people say you have to use force to change minds. I prefer to use communication.",
     choices: [
-      { text: "Book a Digital PR consultation", nextNode: "pr_form_modal" },
-      { text: "I don't know what I need, but they keep asking me to do PR", nextNode: "PR_modal" },
-      { text: "Book a publicity consultation", nextNode: "pr_form_modal" },
+      { text: "Book a Digital PR consultation", nextNode: "dpr_calendly" },
+      { text: "I don't know what I need, but they keep asking me to do PR", nextNode: "pr_calendly" },
+      { text: "Book a publicity consultation", nextNode: "publicity_calendly" },
     ]
   },
   "work_with_3": {
@@ -512,6 +632,21 @@ const dialogueTree: DialogueTree = {
       window.open('https://foundationinc.co/lab/', '_blank');
     },
     isEndNode: true
+  },
+  "dpr_calendly": {
+    text: "Opening DPR consultation calendar...",
+    callback: dialogueCallbacks.showDPRCalendly,
+    isEndNode: true
+  },
+  "pr_calendly": {
+    text: "Opening PR consultation calendar...",
+    callback: dialogueCallbacks.showPRCalendly,
+    isEndNode: true
+  },
+  "publicity_calendly": {
+    text: "Opening publicity consultation calendar...",
+    callback: dialogueCallbacks.showPublicityCalendly,
+    isEndNode: true
   }
 };
 
@@ -537,7 +672,7 @@ class DialogueManager {
   private constructor() {
     // Show initial greeting for 8 seconds, then start cycle
     setTimeout(() => {
-      this.startContentCycle();
+    this.startContentCycle();
     }, DialogueManager.CYCLE_DELAY);
   }
 
@@ -733,7 +868,7 @@ const showLoreContent = (path: string) => {
 export const getCurrentText = () => DialogueManager.getInstance().getCurrentText();
 export const getCurrentChoices = () => DialogueManager.getInstance().getCurrentChoices();
 export const makeChoice = (index: number) => DialogueManager.getInstance().makeChoice(index);
-export const handleEasterEggClick = () => DialogueManager.getInstance().handleEasterEggClick();
+export const handleEasterEggClick = () => DialogueManager.getInstance().handleEasterEggClick(); 
 export const startAutoPlay = () => DialogueManager.getInstance().startAutoPlay();
 export const resetToHome = () => DialogueManager.getInstance().resetToHome();
 export const navigateBack = () => DialogueManager.getInstance().navigateBack();
