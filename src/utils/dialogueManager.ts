@@ -534,7 +534,7 @@ const dialogueTree: DialogueTree = {
       {
         text: "LinkedIn\n💼\nWeekly Newsletter on Marketing, Business, or Philosophy.",
         nextNode: "linkedin_social",
-        socialLink: "https://www.linkedin.com/in/enzo-carletti/"
+        socialLink: "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7289151971377188864"
       },
       {
         text: "Twitch\n🎮\nKick back and relax with Enzo. Sometimes live demos or interviews.",
