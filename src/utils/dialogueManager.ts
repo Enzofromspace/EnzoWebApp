@@ -13,6 +13,7 @@ import memoryFragments from '@/data/lore/memory-fragments.md?raw';
 import siliconKoans from '@/data/lore/silicon-koans.md?raw';
 import binaryZen from '@/data/lore/binary-zen.md?raw';
 import digitalEnlightenment from '@/data/lore/digital-enlightenment.md?raw';
+import whySupport from '@/data/why-support.md?raw';
 
 // Configure marked to handle line breaks properly
 marked.setOptions({
@@ -44,59 +45,6 @@ export type ContentType = 'thoughts' | 'jokes' | 'quotes' | 'easter_eggs';
 
 // Add callback registry
 const dialogueCallbacks: Record<string, DialogueCallback> = {
-  get_to_know_end: () => {
-    const modal = document.createElement('div');
-    modal.className = 'resume-modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <div class="resume-container">
-          <img src="/images/online_EnzoCarlettiCV.2025.png" alt="Resume" class="resume-image" />
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    
-    const closeBtn = modal.querySelector('.close-button');
-    const img = modal.querySelector('.resume-image') as HTMLImageElement;
-    let scale = 1;
-    let isDragging = false;
-    let startX: number, startY: number, translateX = 0, translateY = 0;
-
-    // Add zoom functionality
-    modal.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? 0.9 : 1.1;
-      scale *= delta;
-      scale = Math.min(Math.max(0.5, scale), 3); // Limit zoom between 0.5x and 3x
-      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    });
-
-    // Add drag functionality
-    img.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.clientX - translateX;
-      startY = e.clientY - translateY;
-      img.style.cursor = 'grabbing';
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
-      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    });
-
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-      img.style.cursor = 'grab';
-    });
-
-    closeBtn?.addEventListener('click', () => {
-      modal.remove();
-    });
-  },
-  
   work_with_end: () => {
     // Display intake form
     const formModal = document.createElement('div');
@@ -503,9 +451,9 @@ const loreContent: Record<string, string> = {
 // Update dialogueTree to include callbacks
 const dialogueTree: DialogueTree = {
   "start": {
-    text: "Welcome I am Enzo.ai - Please make a selection from the choices availble to begin your adventure.",
+    text: "Welcome I am Enzo.ai - Please make a selection from the choices availble.",
     choices: [
-      { text: "Get to know Enzo", nextNode: "get_to_know" },
+      { text: "Who's Enzo", nextNode: "get_to_know" },
       { text: "Work With Enzo", nextNode: "work_with" },
       { text: "Kill Some Time", nextNode: "kill_time" }
     ]
@@ -513,14 +461,16 @@ const dialogueTree: DialogueTree = {
   "get_to_know": {
     text: "Solid Choice. People have been telling me good things.",
     choices: [
-      { text: "See the resume", nextNode: "get_to_know_end" },
+      { text: "See the public bio", nextNode: "get_to_know_end" },
       { text: "Get Enzo's socials", nextNode: "get_to_know_end2" },
       { text: "Learn about this project", nextNode: "get_to_know_end3" }
     ]
   },
   "get_to_know_end": {
-    text: "This screen is a placeholder TBH. So many better things to click. Go click arround.",
-    callback: dialogueCallbacks.get_to_know_end,
+    text: "Opening Enzo's profile...",
+    callback: () => {
+      window.open('https://foundationinc.co/team/enzo-carletti', '_blank');
+    },
     isEndNode: true
   },
   "get_to_know_end2": {
@@ -561,8 +511,8 @@ const dialogueTree: DialogueTree = {
   "work_with": {
     text: "Enzo is programmed to support three primary tracks. Choose now...",
     choices: [
-      { text: "I need a marketing agency", nextNode: "work_with_1" },
-      { text: "I need Public Relations Support", nextNode: "work_with_2" },
+      { text: "Marketing agency", nextNode: "work_with_1" },
+      { text: "Public Relations Support", nextNode: "work_with_2" },
       { text: "Support this project", nextNode: "work_with_3" },
     ]
   },
@@ -583,8 +533,35 @@ const dialogueTree: DialogueTree = {
     ]
   },
   "work_with_3": {
-    text: "You're a gem. All support is appreciated. I'm not sure what I need, but I'm sure you'll help me figure it out.",
-    callback: dialogueCallbacks.get_to_know_end3,
+    text: "Opening support information...",
+    callback: () => {
+      const modal = document.createElement('div');
+      modal.className = 'splash-reel-modal';
+      modal.innerHTML = `
+        <div class="modal-content foundation-theme">
+          <div class="modal-header">
+            <span class="exit-button">EXIT</span>
+          </div>
+          <div class="markdown-content">
+            ${marked.parse(whySupport)}
+          </div>
+        </div>
+      `;
+      
+      modal.classList.add('tv-animation');
+      document.body.appendChild(modal);
+      
+      const exitBtn = modal.querySelector('.exit-button');
+      const handleExit = () => {
+        modal.classList.add('tv-off');
+        setTimeout(() => modal.remove(), 500);
+      };
+      
+      exitBtn?.addEventListener('click', handleExit);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') handleExit();
+      });
+    },
     isEndNode: true
   },
   "kill_time": {

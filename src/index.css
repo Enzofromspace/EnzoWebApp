@@ -54,20 +54,20 @@ body {
   right: 40px;
   top: 50%;
   transform: translateY(-50%);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  width: min(800px, calc(100% - 80px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(300px, calc(100% - 80px));
   padding: 0 10px;
   max-height: 80vh;
   overflow-y: auto;
 }
 
 .choice-box {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border: none;
-  padding: 15px;
-  border-radius: 5px;
+  padding: 15px 20px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
@@ -75,16 +75,20 @@ body {
   font-family: 'Press Start 2P', system-ui, -apple-system, sans-serif;
   font-size: 0.8em;
   line-height: 1.4;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
   white-space: pre-wrap;
   hyphens: auto;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .choice-box:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .error-message {
@@ -108,16 +112,14 @@ body {
     transform: translateX(50%);
     width: 90%;
     max-width: 400px;
-    grid-template-columns: 1fr;
-    gap: 12px;
     padding: 0;
     max-height: 60vh;
   }
 
   .choice-box {
     font-size: 0.7em;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 15px;
+    min-height: 45px;
   }
 
   .dialogue-box {
@@ -138,6 +140,7 @@ body {
   .choice-box {
     padding: 10px;
     font-size: 0.65em;
+    min-height: 40px;
   }
 
   .dialogue-box {
@@ -929,4 +932,44 @@ body {
   .calendly-container {
     height: 600px;
   }
+}
+
+/* Add to existing splash-reel-modal styles */
+.splash-reel-modal .markdown-content {
+  color: #000000;  /* Set text color to black */
+}
+
+.splash-reel-modal .markdown-content h1,
+.splash-reel-modal .markdown-content h2 {
+  color: #FF6B35;  /* Keep headers in Foundation orange */
+  margin-bottom: 1.5rem;
+}
+
+.splash-reel-modal .markdown-content .support-button {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background: #FF6B35;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.splash-reel-modal .markdown-content .support-button:hover {
+  background: #ff8255;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.2);
+}
+
+.splash-reel-modal .markdown-content ul {
+  color: #000000;
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.splash-reel-modal .markdown-content ul li {
+  margin-bottom: 0.5rem;
 } 
