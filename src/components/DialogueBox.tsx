@@ -47,26 +47,31 @@ const DialogueBox = () => {
 
   // Handle dialogue state updates
   useEffect(() => {
-    // Start initial animation immediately
-    animateText(getCurrentText());
-
-    const handleDialogueUpdate = () => {
+    const handleDialogueUpdate = (event: CustomEvent) => {
       const newText = getCurrentText();
       setFullText(newText);
       
-      if (dialogueRef.current) {
-        gsap.fromTo(dialogueRef.current,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.5 }
-        );
+      if (event.detail?.skipAnimation) {
+        setDisplayText(newText);
+        setIsAnimating(false);
+        window.dispatchEvent(new CustomEvent('text-animation-complete'));
+      } else {
+        if (dialogueRef.current) {
+          gsap.fromTo(dialogueRef.current,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.5 }
+          );
+        }
+        animateText(newText);
       }
-      
-      animateText(newText);
     };
 
-    window.addEventListener('dialogue-update', handleDialogueUpdate);
+    // Start initial animation immediately with the current text
+    setDisplayText(getCurrentText());
+    
+    window.addEventListener('dialogue-update', handleDialogueUpdate as EventListener);
     return () => {
-      window.removeEventListener('dialogue-update', handleDialogueUpdate);
+      window.removeEventListener('dialogue-update', handleDialogueUpdate as EventListener);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }

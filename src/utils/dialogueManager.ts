@@ -649,11 +649,15 @@ class DialogueManager {
 
   // Private constructor for singleton pattern
   private constructor() {
-    // Set initial text immediately
-    this.currentText = dialogueTree.start.text;
-    window.dispatchEvent(new CustomEvent('dialogue-update'));
+    // Set initial welcome message
+    this.currentText = "Welcome! I am Enzo.ai - Please make a selection from the choices available.";
     
-    // Wait for initial text animation to complete before starting cycle
+    // Initial render without animation
+    window.dispatchEvent(new CustomEvent('dialogue-update', { 
+      detail: { skipAnimation: true } 
+    }));
+    
+    // Wait for initial text to be displayed before starting cycle
     window.addEventListener('text-animation-complete', () => {
       this.animationComplete = true;
       // Start cycle after initial delay
