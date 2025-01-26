@@ -640,44 +640,65 @@ class DialogueManager {
   private currentCycleIndex: number = 0;
   private isAutoPlaying: boolean = false;
   private cycleTimeout: NodeJS.Timeout | null = null;
-  private static CYCLE_DELAY = 8000;
-
+  private static INITIAL_DELAY = 4000; // 4 seconds for initial text
+  private static CYCLE_DELAY = 4000;   // 4 seconds between cycles
+  private animationComplete = false;
+  
   private nodeHistory: string[] = ['start'];
   private currentHistoryIndex: number = 0;
 
   // Private constructor for singleton pattern
   private constructor() {
-    // Show initial greeting for 8 seconds, then start cycle
-    setTimeout(() => {
-    this.startContentCycle();
-    }, DialogueManager.CYCLE_DELAY);
+    // Set initial text immediately
+    this.currentText = dialogueTree.start.text;
+    window.dispatchEvent(new CustomEvent('dialogue-update'));
+    
+    // Wait for initial text animation to complete before starting cycle
+    window.addEventListener('text-animation-complete', () => {
+      this.animationComplete = true;
+      // Start cycle after initial delay
+      setTimeout(() => {
+        this.startContentCycle();
+      }, DialogueManager.INITIAL_DELAY);
+    }, { once: true });
   }
 
   // State management methods
   private startContentCycle() {
-    if (this.isAutoPlaying) return;
+    if (this.isAutoPlaying || !this.animationComplete) return;
     this.isAutoPlaying = true;
     
     const cycleContent = () => {
       if (!this.isAutoPlaying) return;
       
-      const contentType = this.contentCycle[this.currentCycleIndex];
-      const content = dialogueContent[contentType];
-      this.currentText = this.getRandomContent(content);
-      
-      // Add clickable class for easter eggs
-      if (contentType === 'easter_eggs') {
-        document.querySelector('.dialogue-box')?.classList.add('easter-egg');
-      } else {
-        document.querySelector('.dialogue-box')?.classList.remove('easter-egg');
+      const currentNodeData = dialogueTree[this.currentNode];
+      // Don't cycle if we're at an end node
+      if (currentNodeData.isEndNode) {
+        this.stopContentCycle();
+        return;
       }
       
-      window.dispatchEvent(new CustomEvent('dialogue-update'));
+      const contentType = this.contentCycle[this.currentCycleIndex];
+      const content = dialogueContent[contentType];
+      const newText = this.getRandomContent(content);
+      
+      if (newText !== this.currentText) {
+        this.currentText = newText;
+        
+        if (contentType === 'easter_eggs') {
+          document.querySelector('.dialogue-box')?.classList.add('easter-egg');
+        } else {
+          document.querySelector('.dialogue-box')?.classList.remove('easter-egg');
+        }
+        
+        window.dispatchEvent(new CustomEvent('dialogue-update'));
+      }
       
       this.currentCycleIndex = (this.currentCycleIndex + 1) % this.contentCycle.length;
       
-      // Schedule next update
-      this.cycleTimeout = setTimeout(cycleContent, DialogueManager.CYCLE_DELAY);
+      window.addEventListener('text-animation-complete', () => {
+        this.cycleTimeout = setTimeout(cycleContent, DialogueManager.CYCLE_DELAY);
+      }, { once: true });
     };
 
     cycleContent();
@@ -720,7 +741,6 @@ class DialogueManager {
     if (choiceIndex >= 0 && choiceIndex < choices.length) {
       const nextNode = choices[choiceIndex].nextNode;
       
-      // Update history
       this.nodeHistory = this.nodeHistory.slice(0, this.currentHistoryIndex + 1);
       this.nodeHistory.push(nextNode);
       this.currentHistoryIndex = this.nodeHistory.length - 1;
@@ -728,15 +748,24 @@ class DialogueManager {
       this.currentNode = nextNode;
       const currentNodeData = dialogueTree[nextNode];
 
-      // Execute callback if it exists and is an end node
+      // Handle callbacks for end nodes
       if (currentNodeData.isEndNode && currentNodeData.callback) {
         currentNodeData.callback();
+        return; // Don't start cycling for end nodes
       }
 
-      // Update text based on node type
       this.currentText = currentNodeData?.text || "Something went wrong...";
+      this.animationComplete = false;
       
       window.dispatchEvent(new CustomEvent('dialogue-update'));
+
+      // Wait for node text animation to complete, then start cycling
+      window.addEventListener('text-animation-complete', () => {
+        this.animationComplete = true;
+        setTimeout(() => {
+          this.startContentCycle();
+        }, DialogueManager.INITIAL_DELAY);
+      }, { once: true });
     }
   }
 
@@ -756,11 +785,22 @@ class DialogueManager {
     this.currentText = dialogueTree.start.text;
     this.currentCycleIndex = 0;
     this.isAutoPlaying = false;
+    this.animationComplete = false;
+    
     if (this.cycleTimeout) {
       clearTimeout(this.cycleTimeout);
       this.cycleTimeout = null;
     }
+    
     window.dispatchEvent(new CustomEvent('dialogue-update'));
+
+    // Restart cycling after home text animation
+    window.addEventListener('text-animation-complete', () => {
+      this.animationComplete = true;
+      setTimeout(() => {
+        this.startContentCycle();
+      }, DialogueManager.INITIAL_DELAY);
+    }, { once: true });
   }
 
   public navigateBack(): void {

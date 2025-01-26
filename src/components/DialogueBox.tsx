@@ -5,9 +5,9 @@ import { playTextBlip } from '@/utils/soundEffects';
 
 const DialogueBox = () => {
   // Text display state
-  const [displayText, setDisplayText] = useState(getCurrentText());  // Initialize with current text
-  const [fullText, setFullText] = useState(getCurrentText());       // Initialize with current text
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [displayText, setDisplayText] = useState(getCurrentText());
+  const [fullText, setFullText] = useState(getCurrentText());
+  const [isAnimating, setIsAnimating] = useState(true);
   
   // Refs for animation control
   const dialogueRef = useRef<HTMLDivElement>(null);
@@ -47,11 +47,13 @@ const DialogueBox = () => {
 
   // Handle dialogue state updates
   useEffect(() => {
+    // Start initial animation immediately
+    animateText(getCurrentText());
+
     const handleDialogueUpdate = () => {
       const newText = getCurrentText();
       setFullText(newText);
       
-      // Animate dialogue box entry
       if (dialogueRef.current) {
         gsap.fromTo(dialogueRef.current,
           { opacity: 0, y: 30 },
@@ -59,12 +61,8 @@ const DialogueBox = () => {
         );
       }
       
-      // Start text animation
       animateText(newText);
     };
-
-    // Trigger initial animation
-    handleDialogueUpdate();
 
     window.addEventListener('dialogue-update', handleDialogueUpdate);
     return () => {
