@@ -453,7 +453,7 @@ const dialogueTree: DialogueTree = {
   "start": {
     text: "Welcome I am Enzo.ai - Please make a selection from the choices availble.",
     choices: [
-      { text: "Who's Enzo", nextNode: "get_to_know" },
+      { text: "Get to know Enzo", nextNode: "get_to_know" },
       { text: "Work With Enzo", nextNode: "work_with" },
       { text: "Kill Some Time", nextNode: "kill_time" }
     ]
@@ -461,13 +461,13 @@ const dialogueTree: DialogueTree = {
   "get_to_know": {
     text: "Solid Choice. People have been telling me good things.",
     choices: [
-      { text: "See the public bio", nextNode: "get_to_know_end" },
+      { text: "See Enzo's public bio", nextNode: "get_to_know_end" },
       { text: "Get Enzo's socials", nextNode: "get_to_know_end2" },
       { text: "Learn about this project", nextNode: "get_to_know_end3" }
     ]
   },
   "get_to_know_end": {
-    text: "Opening Enzo's profile...",
+    text: "Launching bio...",
     callback: () => {
       window.open('https://foundationinc.co/team/enzo-carletti', '_blank');
     },
@@ -511,7 +511,7 @@ const dialogueTree: DialogueTree = {
   "work_with": {
     text: "Enzo is programmed to support three primary tracks. Choose now...",
     choices: [
-      { text: "Marketing agency", nextNode: "work_with_1" },
+      { text: "I need a Marketing agency", nextNode: "work_with_1" },
       { text: "Public Relations Support", nextNode: "work_with_2" },
       { text: "Support this project", nextNode: "work_with_3" },
     ]
@@ -521,7 +521,7 @@ const dialogueTree: DialogueTree = {
     choices: [
       { text: "Watch our splash reel", nextNode: "splash_reel" },
       { text: "Read Foundation Case Studies", nextNode: "case_studies" },
-      { text: "Explore our insights", nextNode: "foundation_blog" },
+      { text: "Book a discovery call", nextNode: "foundation_call" },
     ]
   },
   "work_with_2": {
@@ -533,7 +533,7 @@ const dialogueTree: DialogueTree = {
     ]
   },
   "work_with_3": {
-    text: "Opening support information...",
+    text: "If you want to go fast, go alone. If you want to go far, go together.",
     callback: () => {
       const modal = document.createElement('div');
       modal.className = 'splash-reel-modal';
@@ -603,10 +603,10 @@ const dialogueTree: DialogueTree = {
     },
     isEndNode: true
   },
-  "foundation_blog": {
-    text: "Opening Foundation Lab...",
+  "foundation_call": {
+    text: "One moment please...",
     callback: () => {
-      window.open('https://foundationinc.co/lab/', '_blank');
+      window.open('https://foundationinc.co/contact/', '_blank');
     },
     isEndNode: true
   },
@@ -650,7 +650,7 @@ class DialogueManager {
   // Private constructor for singleton pattern
   private constructor() {
     // Set initial welcome message
-    this.currentText = "Welcome! I am Enzo.ai - Please make a selection from the choices available.";
+    //this.currentText = "Welcome! I am Enzo.ai - Please make a selection from the choices available.";
     
     // Initial render without animation
     window.dispatchEvent(new CustomEvent('dialogue-update', { 
