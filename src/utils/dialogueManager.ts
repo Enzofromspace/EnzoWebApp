@@ -502,7 +502,7 @@ const dialogueTree: DialogueTree = {
         socialLink: "https://www.tiktok.com/@enzofromspace"
       }
     ],
-    isEndNode: true
+   isEndNode: true
   },
   "get_to_know_end3": {
     text: "Accessing project documentation...",
@@ -644,7 +644,7 @@ class DialogueManager {
   private static INITIAL_DELAY = 4000; // 4 seconds for initial text
   private static CYCLE_DELAY = 4000;   // 4 seconds between cycles
   private animationComplete = false;
-  
+
   private nodeHistory: string[] = ['start'];
   private currentHistoryIndex: number = 0;
 
@@ -663,7 +663,7 @@ class DialogueManager {
       this.animationComplete = true;
       // Start cycle after initial delay
       setTimeout(() => {
-        this.startContentCycle();
+    this.startContentCycle();
       }, DialogueManager.INITIAL_DELAY);
     }, { once: true });
   }
@@ -696,7 +696,7 @@ class DialogueManager {
           document.querySelector('.dialogue-box')?.classList.remove('easter-egg');
         }
         
-        window.dispatchEvent(new CustomEvent('dialogue-update'));
+      window.dispatchEvent(new CustomEvent('dialogue-update'));
       }
       
       this.currentCycleIndex = (this.currentCycleIndex + 1) % this.contentCycle.length;
@@ -744,8 +744,24 @@ class DialogueManager {
 
     const choices = this.getCurrentChoices();
     if (choiceIndex >= 0 && choiceIndex < choices.length) {
-      const nextNode = choices[choiceIndex].nextNode;
+      const choice = choices[choiceIndex];
       
+      // If it's a social link, don't change nodes
+      if (choice.socialLink) {
+        // Keep current text and continue cycling
+        window.dispatchEvent(new CustomEvent('dialogue-update'));
+        
+        // Resume content cycle after a delay
+        setTimeout(() => {
+          this.animationComplete = true;
+          this.startContentCycle();
+        }, DialogueManager.INITIAL_DELAY);
+        
+        return;
+      }
+
+      // Regular node navigation
+      const nextNode = choice.nextNode;
       this.nodeHistory = this.nodeHistory.slice(0, this.currentHistoryIndex + 1);
       this.nodeHistory.push(nextNode);
       this.currentHistoryIndex = this.nodeHistory.length - 1;
@@ -753,11 +769,9 @@ class DialogueManager {
       this.currentNode = nextNode;
       const currentNodeData = dialogueTree[nextNode];
 
-      // Always set the text first
       this.currentText = currentNodeData?.text || "Something went wrong...";
       this.animationComplete = false;
       
-      // Dispatch update event for text animation
       window.dispatchEvent(new CustomEvent('dialogue-update'));
 
       // For end nodes with callbacks, wait for animation to complete
