@@ -680,6 +680,10 @@ body {
   padding: 2rem;
   border: 2px solid #00ff00;
   color: #00ff00;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .passcode-modal input {
@@ -689,8 +693,19 @@ body {
   padding: 0.5rem;
   font-family: 'Share Tech Mono', monospace;
   text-align: center;
-  margin: 1rem 0;
   width: 200px;
+}
+
+.passcode-modal .gif-container {
+  width: 80%;
+  max-width: 300px;
+  margin: 1rem 0;
+}
+
+.passcode-modal .gif-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
 }
 
 .passcode-modal button {
@@ -764,22 +779,9 @@ body {
   }
 }
 
-/* Add gif styling to dialogue box */
+/* Remove dialogue gif styles since they're no longer needed */
 .dialogue-box .dialogue-gif {
-  width: 100%;
-  height: auto;
-  max-height: 150px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  border-radius: 4px;
-}
-
-/* Adjust for mobile */
-@media (max-width: 768px) {
-  .dialogue-box .dialogue-gif {
-    max-height: 100px;
-  }
+  display: none;
 }
 
 /* Foundation Splash Reel Modal */

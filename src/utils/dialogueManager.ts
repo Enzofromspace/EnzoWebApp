@@ -162,6 +162,9 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
           <input type="password" id="passcode-input" maxlength="6" />
           <button id="submit-passcode">SUBMIT</button>
         </div>
+        <div class="passcode-content">
+          <img src="/images/giphy.gif" class="dialogue-gif" alt="passcode required" />
+        </div>
       </div>
     `;
     document.body.appendChild(modal);
@@ -588,7 +591,7 @@ const dialogueTree: DialogueTree = {
     isEndNode: true
   },
   "explore_lore": {
-    text: `<img src="/images/giphy.gif" class="dialogue-gif" alt="passcode required" />`,
+    text: "Nice try bub...",
     callback: dialogueCallbacks.showPasscodeModal,
     isEndNode: true
   },
