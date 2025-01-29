@@ -753,24 +753,30 @@ class DialogueManager {
       this.currentNode = nextNode;
       const currentNodeData = dialogueTree[nextNode];
 
-      // Handle callbacks for end nodes
-      if (currentNodeData.isEndNode && currentNodeData.callback) {
-        currentNodeData.callback();
-        return; // Don't start cycling for end nodes
-      }
-
+      // Always set the text first
       this.currentText = currentNodeData?.text || "Something went wrong...";
       this.animationComplete = false;
       
+      // Dispatch update event for text animation
       window.dispatchEvent(new CustomEvent('dialogue-update'));
 
-      // Wait for node text animation to complete, then start cycling
-      window.addEventListener('text-animation-complete', () => {
-        this.animationComplete = true;
-        setTimeout(() => {
-          this.startContentCycle();
-        }, DialogueManager.INITIAL_DELAY);
-      }, { once: true });
+      // For end nodes with callbacks, wait for animation to complete
+      if (currentNodeData.isEndNode && currentNodeData.callback) {
+        window.addEventListener('text-animation-complete', () => {
+          currentNodeData.callback!();
+        }, { once: true });
+        return;
+      }
+
+      // For non-end nodes, handle cycling
+      if (!currentNodeData.isEndNode) {
+        window.addEventListener('text-animation-complete', () => {
+          this.animationComplete = true;
+          setTimeout(() => {
+            this.startContentCycle();
+          }, DialogueManager.INITIAL_DELAY);
+        }, { once: true });
+      }
     }
   }
 
