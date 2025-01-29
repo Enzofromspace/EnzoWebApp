@@ -163,7 +163,7 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
           <button id="submit-passcode">SUBMIT</button>
         </div>
         <div class="passcode-content">
-          <img src="${import.meta.env.BASE_URL}images/giphy.gif" class="dialogue-gif" alt="passcode required" />
+          <img src="/EnzoWebApp/images/giphy.gif" class="dialogue-gif" alt="passcode required" />
         </div>
       </div>
     `;
@@ -591,7 +591,7 @@ const dialogueTree: DialogueTree = {
     isEndNode: true
   },
   "explore_lore": {
-    text: `<img src="${import.meta.env.BASE_URL}images/giphy.gif" class="dialogue-gif" alt="passcode required" />`,
+    text: `<img src="/EnzoWebApp/images/giphy.gif" class="dialogue-gif" alt="passcode required" />`,
     callback: dialogueCallbacks.showPasscodeModal,
     isEndNode: true
   },

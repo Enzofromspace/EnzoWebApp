@@ -6,7 +6,7 @@ const Character = () => {
     typeof window !== 'undefined' ? window.innerWidth <= 768 : false
   );
   const [isLoaded, setIsLoaded] = useState(false);
-  const characterTexture = '/images/character.png';
+  const characterTexture = `${import.meta.env.BASE_URL}assets/images/character.png`;
   
   const position = {
     x: window.innerWidth * 0.15,

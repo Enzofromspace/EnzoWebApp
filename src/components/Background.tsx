@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 const Background = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const backgroundTexture = '/images/background.png';
+  const backgroundTexture = `${import.meta.env.BASE_URL}assets/images/background.png`;
 
   useEffect(() => {
     const img = new Image();

@@ -57,9 +57,15 @@ export default defineConfig({
           'tone': ['tone'],
           'gsap': ['gsap'],
         },
-        assetFileNames: 'assets/[name][extname]'
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && /\.(gif|jpe?g|png|svg)$/.test(assetInfo.name)) {
+            return 'images/[name][extname]';
+          }
+          return 'assets/[name][extname]';
+        }
       },
     },
+    copyPublicDir: true
   },
 
   publicDir: 'public',
