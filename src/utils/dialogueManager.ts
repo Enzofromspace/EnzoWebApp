@@ -501,7 +501,8 @@ const dialogueTree: DialogueTree = {
         nextNode: "tiktok_social",
         socialLink: "https://www.tiktok.com/@enzofromspace"
       }
-    ]
+    ],
+    isEndNode: true
   },
   "get_to_know_end3": {
     text: "Accessing project documentation...",
