@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 
-let synth: Tone.PolySynth | null = null;
+// let synth: Tone.PolySynth | null = null;
 let blipSynth: Tone.Synth | null = null;
 let isInitialized = false;
 
@@ -13,16 +13,16 @@ export const initSoundEffects = async () => {
     }
 
     // Main synth for button clicks (unchanged)
-    synth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'fatsquare' },
-      envelope: {
-        attack: 0.02,
-        decay: 0.1,
-        sustain: 0.1,
-        release: 0.3
-      },
-      volume: -6
-    }).toDestination();
+    // synth = new Tone.PolySynth(Tone.Synth, {
+    //   oscillator: { type: 'fatsquare' },
+    //   envelope: {
+    //     attack: 0.02,
+    //     decay: 0.1,
+    //     sustain: 0.1,
+    //     release: 0.3
+    //   },
+    //   volume: -6
+    // }).toDestination();
 
     // Highpass filter for blip synth
     const filter = new Tone.Filter({

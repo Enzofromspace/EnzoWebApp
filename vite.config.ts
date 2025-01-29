@@ -57,6 +57,7 @@ export default defineConfig({
           'tone': ['tone'],
           'gsap': ['gsap'],
         },
+        assetFileNames: 'assets/[name][extname]'
       },
     },
   },

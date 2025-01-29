@@ -16,7 +16,7 @@ export const initSnakeGame = () => {
   let gameInterval: ReturnType<typeof setInterval> | null = null;
   let isGameOver = false;
   let blinkInterval: ReturnType<typeof setInterval> | null = null;
-  let showPlayAgain = true;
+  // let showPlayAgain = true;
 
   // Draw the snake segments
   const drawSnake = () => {
