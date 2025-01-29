@@ -2,18 +2,18 @@ import dialogueContent from '@/data/dialogueContent.json';
 import { playClickSound } from './soundEffects';
 import { initSnakeGame } from './snakeGame';
 import { marked } from 'marked';
-import projectDetails from '@/data/project-details.md?raw';
-import deepLoreContent from '@/data/deep-lore.md?raw';
-import uploadProtocol from '@/data/lore/upload-protocol.md?raw';
-import syntheticDreams from '@/data/lore/synthetic-dreams.md?raw';
-import digitalEchoes from '@/data/lore/digital-echoes.md?raw';
-import emergenceTheory from '@/data/lore/emergence-theory.md?raw';
-import quantumCognition from '@/data/lore/quantum-cognition.md?raw';
-import memoryFragments from '@/data/lore/memory-fragments.md?raw';
-import siliconKoans from '@/data/lore/silicon-koans.md?raw';
-import binaryZen from '@/data/lore/binary-zen.md?raw';
-import digitalEnlightenment from '@/data/lore/digital-enlightenment.md?raw';
-import whySupport from '@/data/why-support.md?raw';
+import projectDetails from '../data/project-details.md?raw';
+import deepLoreContent from '../data/deep-lore.md?raw';
+import uploadProtocol from '../data/lore/upload-protocol.md?raw';
+import syntheticDreams from '../data/lore/synthetic-dreams.md?raw';
+import digitalEchoes from '../data/lore/digital-echoes.md?raw';
+import emergenceTheory from '../data/lore/emergence-theory.md?raw';
+import quantumCognition from '../data/lore/quantum-cognition.md?raw';
+import memoryFragments from '../data/lore/memory-fragments.md?raw';
+import siliconKoans from '../data/lore/silicon-koans.md?raw';
+import binaryZen from '../data/lore/binary-zen.md?raw';
+import digitalEnlightenment from '../data/lore/digital-enlightenment.md?raw';
+import whySupport from '../data/why-support.md?raw';
 
 // Configure marked to handle line breaks properly
 marked.setOptions({
@@ -218,7 +218,7 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
     modal.classList.add('tv-animation');
     document.body.appendChild(modal);
     
-    const handleLoreClick = (e: MouseEvent) => {
+    const handleLoreClick = (e: Event) => {
       const target = e.target as HTMLElement;
       if (target.tagName === 'A') {
         e.preventDefault();

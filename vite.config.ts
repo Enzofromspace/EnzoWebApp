@@ -3,24 +3,28 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  base: "/EnzoWebApp/"
+  base: "/EnzoWebApp/",  // ✅ Ensure this is correct; should match your GitHub repo name
 
-  plugins: [react(), {
-    name: 'markdown-loader',
-    transform(code, id) {
-      if (id.endsWith('.md?raw')) {
-        const cleanContent = code
-          .replace(/^export default /, '')
-          .replace(/^["']|["']$/g, '')
-          .replace(/\\n/g, '\n')
-          .trim();
-        return {
-          code: `export default ${JSON.stringify(cleanContent)}`,
-          map: null
-        };
+  plugins: [
+    react(), 
+    {
+      name: 'markdown-loader',
+      transform(code, id) {
+        if (id.endsWith('.md?raw')) {
+          const cleanContent = code
+            .replace(/^export default /, '')
+            .replace(/^["']|["']$/g, '')
+            .replace(/\\n/g, '\n')
+            .trim();
+          return {
+            code: `export default ${JSON.stringify(cleanContent)}`,
+            map: null
+          };
+        }
       }
     }
-  }],
+  ],
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -29,6 +33,7 @@ export default defineConfig({
     },
     dedupe: ['react', 'react-dom', '@pixi/react', 'pixi.js']
   },
+
   server: {
     port: 3000,
     open: true,
@@ -36,6 +41,7 @@ export default defineConfig({
       usePolling: true,
     },
   },
+
   build: {
     outDir: 'dist',
     sourcemap: true,
@@ -54,12 +60,23 @@ export default defineConfig({
       },
     },
   },
+
   publicDir: 'public',
+
   optimizeDeps: {
     include: ['react', 'react-dom', '@pixi/react', 'pixi.js'],
   },
-  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg', '**/*.md'],
+
+  assetsInclude: [
+    '**/*.png', 
+    '**/*.jpg', 
+    '**/*.jpeg', 
+    '**/*.gif', 
+    '**/*.svg', 
+    '**/*.md'  // ✅ Ensure Markdown files are included in assets
+  ],
+
   json: {
     stringify: true
   }
-}); 
+});
