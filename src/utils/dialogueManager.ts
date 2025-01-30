@@ -603,7 +603,7 @@ const dialogueTree: DialogueTree = {
   "case_studies": {
     text: "Opening Foundation case studies...",
     callback: () => {
-      window.open('https://foundationinc.co/case-studies', '_blank');
+      handleExternalLink('https://foundationinc.co/case-studies');
     },
     isEndNode: true
   },
@@ -918,3 +918,16 @@ export const startAutoPlay = () => DialogueManager.getInstance().startAutoPlay()
 export const resetToHome = () => DialogueManager.getInstance().resetToHome();
 export const navigateBack = () => DialogueManager.getInstance().navigateBack();
 export const navigateForward = () => DialogueManager.getInstance().navigateForward(); 
+
+// Update the callback handling for links
+const handleExternalLink = (url: string) => {
+  // For mobile Safari and other mobile browsers
+  const newWindow = window.open();
+  if (newWindow) {
+    newWindow.opener = null;
+    newWindow.location.href = url;
+  } else {
+    // Fallback if window.open() is blocked
+    window.location.href = url;
+  }
+}; 

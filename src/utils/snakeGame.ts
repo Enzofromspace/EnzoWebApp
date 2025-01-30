@@ -73,24 +73,41 @@ export const initSnakeGame = () => {
       }
       blink = !blink;
     }, 500);
+
+    // Remove scroll prevention
+    document.body.classList.remove('game-active');
+    window.removeEventListener('keydown', preventScroll);
   };
 
   const checkAchievement = () => {
     if (score === 50) {
       if (gameInterval) clearInterval(gameInterval);
       
+      // Create black background by clearing canvas
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, GAME_SIZE, GAME_SIZE);
+      
+      // Draw achievement text in green
       ctx.fillStyle = '#00ff00';
       ctx.font = '16px "Press Start 2P"';
       ctx.textAlign = 'center';
-      ctx.fillText('Achievement Unlocked!', GAME_SIZE / 2, GAME_SIZE / 2 - 40);
-      ctx.fillText('Deep Lore Passcode:', GAME_SIZE / 2, GAME_SIZE / 2);
-      ctx.fillText('666999', GAME_SIZE / 2, GAME_SIZE / 2 + 40);
+      ctx.fillText('Achievement Unlocked!', GAME_SIZE / 2, GAME_SIZE / 2 - 60);
+      ctx.fillText('Deep Lore Passcode:', GAME_SIZE / 2, GAME_SIZE / 2 - 20);
+      ctx.fillText('666999', GAME_SIZE / 2, GAME_SIZE / 2 + 20);
       
-      // Add continue button
+      // Add continue button below
       const continueBtn = document.createElement('button');
       continueBtn.textContent = 'Continue Game';
       continueBtn.className = 'continue-game-btn';
-      document.querySelector('.game-controls')?.appendChild(continueBtn);
+      continueBtn.style.cssText = `
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: ${GAME_SIZE / 2 + 60}px;
+      `;
+      
+      const gameModal = document.querySelector('.game-modal');
+      gameModal?.appendChild(continueBtn);
       
       continueBtn.onclick = () => {
         continueBtn.remove();
@@ -140,7 +157,17 @@ export const initSnakeGame = () => {
     drawSnake();
   };
 
+  const preventScroll = (e: KeyboardEvent) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   const startGame = () => {
+    // Add class to prevent scrolling
+    document.body.classList.add('game-active');
+    // Add scroll prevention
+    window.addEventListener('keydown', preventScroll);
     // Reset game state
     if (blinkInterval) clearInterval(blinkInterval);
     if (gameInterval) clearInterval(gameInterval);
@@ -154,6 +181,20 @@ export const initSnakeGame = () => {
     document.querySelector('.score')!.textContent = `Score: 0`;
     
     gameInterval = setInterval(gameLoop, 100);
+  };
+
+  const handleDirectionChange = (newDirection: string) => {
+    const directionMap = {
+      'up': { x: 0, y: -1 },
+      'down': { x: 0, y: 1 },
+      'left': { x: -1, y: 0 },
+      'right': { x: 1, y: 0 }
+    };
+
+    const newDir = directionMap[newDirection as keyof typeof directionMap];
+    if (newDir && !isOppositeDirection(newDir)) {
+      direction = newDir;
+    }
   };
 
   const handleKeydown = (e: KeyboardEvent) => {
@@ -170,23 +211,25 @@ export const initSnakeGame = () => {
       return;
     }
 
-    let newDirection = { ...direction };
     switch (e.key) {
-      case 'ArrowUp': newDirection = { x: 0, y: -1 }; break;
-      case 'ArrowDown': newDirection = { x: 0, y: 1 }; break;
-      case 'ArrowLeft': newDirection = { x: -1, y: 0 }; break;
-      case 'ArrowRight': newDirection = { x: 1, y: 0 }; break;
-    }
-
-    // Check for opposite direction movement
-    if (!isOppositeDirection(newDirection)) {
-      direction = newDirection;
-    } else {
-      endGame();
+      case 'ArrowUp':
+        handleDirectionChange('up');
+        break;
+      case 'ArrowDown':
+        handleDirectionChange('down');
+        break;
+      case 'ArrowLeft':
+        handleDirectionChange('left');
+        break;
+      case 'ArrowRight':
+        handleDirectionChange('right');
+        break;
     }
   };
 
   const cleanup = () => {
+    document.body.classList.remove('game-active');
+    window.removeEventListener('keydown', preventScroll);
     if (gameInterval) clearInterval(gameInterval);
     if (blinkInterval) clearInterval(blinkInterval);
     document.removeEventListener('keydown', handleKeydown);
@@ -194,6 +237,51 @@ export const initSnakeGame = () => {
 
   document.getElementById('start-game')?.addEventListener('click', startGame);
   document.addEventListener('keydown', handleKeydown);
+
+  // Add mobile controls
+  if (window.innerWidth <= 768) {
+    const controls = document.createElement('div');
+    controls.className = 'snake-controls';
+    controls.innerHTML = `
+      <button class="control-button control-up">⬆️</button>
+      <button class="control-button control-right">➡️</button>
+      <button class="control-button control-down">⬇️</button>
+      <button class="control-button control-left">⬅️</button>
+    `;
+    
+    const gameControls = document.querySelector('.game-controls');
+    if (gameControls) {
+      gameControls.appendChild(controls);
+    }
+
+    // Handle both click and touch events
+    const buttons = {
+      up: controls.querySelector('.control-up'),
+      down: controls.querySelector('.control-down'),
+      left: controls.querySelector('.control-left'),
+      right: controls.querySelector('.control-right')
+    };
+
+    // Add both click and touch handlers
+    Object.entries(buttons).forEach(([dir, button]) => {
+      if (button) {
+        const handleInput = (e: Event) => {
+          e.preventDefault();
+          handleDirectionChange(dir);
+        };
+        
+        button.addEventListener('touchstart', handleInput, { passive: false });
+        button.addEventListener('mousedown', handleInput);
+      }
+    });
+  }
+
+  // Add exit handler
+  const exitButton = document.querySelector('.close-button');
+  exitButton?.addEventListener('click', () => {
+    cleanup();
+    // ... existing exit code
+  });
 
   return cleanup;
 }; 

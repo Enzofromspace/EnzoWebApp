@@ -106,7 +106,7 @@ body {
 @media (max-width: 768px) {
   .choices-container {
     position: fixed;
-    bottom: 80px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
@@ -122,7 +122,7 @@ body {
   .dialogue-box {
     position: fixed;
     left: 50%;
-    bottom: calc(65% + 120px); /* Adjusted to be above character's head */
+    bottom: calc(70% + 75px); /* Adjusted to be above character's head */
     transform: translateX(-50%);
     width: 280px;
     font-size: 0.7em;
@@ -152,7 +152,7 @@ body {
   }
 
   .dialogue-box {
-    bottom: calc(65% + 30px); /* Slightly higher on smaller screens */
+    bottom: calc(75% + 75px); /* Slightly higher on smaller screens */
     width: 260px;
   }
 }
@@ -982,4 +982,116 @@ body {
 
 .splash-reel-modal .markdown-content ul li {
   margin-bottom: 0.5rem;
+}
+
+/* Add mobile snake controls */
+@media (max-width: 768px) {
+  .snake-controls {
+    display: grid;
+    position: relative;
+    margin-top: 20px;
+    width: 160px; /* Fixed width for control area */
+    margin-left: auto;
+    margin-right: auto;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 5px;
+  }
+
+  .control-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #333;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+
+  .control-button:active {
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0.95);
+  }
+
+  /* Position buttons in grid */
+  .control-up {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .control-right {
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  .control-down {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .control-left {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Empty cells */
+  .snake-controls::before {
+    content: "";
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .snake-controls::after {
+    content: "";
+    grid-column: 3;
+    grid-row: 3;
+  }
+
+  .game-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+}
+
+/* Snake Game Controls - Hidden by default */
+.snake-controls {
+ /* display: none; /* Ensure hidden by default */
+} 
+
+/* Prevent scrolling while game is active */
+.game-active {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Update passcode modal for mobile */
+@media (max-width: 768px) {
+  .passcode-modal .modal-content {
+    width: 90%;
+    max-width: 300px;
+    padding: 1.5rem;
+  }
+
+  .passcode-modal input {
+    width: 100%;
+    max-width: 200px;
+    font-size: 1.2em;
+    padding: 0.8rem;
+    margin: 1rem 0;
+  }
+
+  .passcode-modal button {
+    padding: 0.8rem 1.5rem;
+    margin-top: 1rem;
+    font-size: 0.9em;
+  }
 } 
