@@ -9,8 +9,8 @@ const Character = () => {
   const characterTexture = `${import.meta.env.BASE_URL}assets/images/character.png`;
   
   const position = {
-    x: window.innerWidth * 0.15,
-    y: isMobile ? window.innerHeight * 0.45 : window.innerHeight * 0.85
+    x: isMobile ? window.innerWidth * 0.5 : window.innerWidth * 0.15,
+    y: isMobile ? window.innerHeight * 0.5 : window.innerHeight * 0.85
   };
 
   useEffect(() => {

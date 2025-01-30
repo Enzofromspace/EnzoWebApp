@@ -106,28 +106,34 @@ body {
 @media (max-width: 768px) {
   .choices-container {
     position: fixed;
-    bottom: 20px;
-    right: 50%;
-    top: auto;
-    transform: translateX(50%);
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 90%;
     max-width: 400px;
     padding: 0;
-    max-height: 60vh;
+    max-height: 50vh;
     display: flex;
     flex-direction: column;
-  }
-
-  .choice-box {
-    font-size: 0.7em;
-    padding: 12px 15px;
-    min-height: 45px;
+    gap: 10px;
+    z-index: 10;
   }
 
   .dialogue-box {
-    bottom: calc(65% + 30px);
-    width: 250px;
+    position: fixed;
+    left: 50%;
+    bottom: calc(65% + 120px); /* Adjusted to be above character's head */
+    transform: translateX(-50%);
+    width: 280px;
     font-size: 0.7em;
+    z-index: 10;
+  }
+
+  /* Keep the dialogue tail visible and properly positioned */
+  .dialogue-box .dialogue-tail {
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
@@ -146,9 +152,8 @@ body {
   }
 
   .dialogue-box {
-    width: 220px;
-    font-size: 0.65em;
-    padding: 15px;
+    bottom: calc(65% + 30px); /* Slightly higher on smaller screens */
+    width: 260px;
   }
 }
 

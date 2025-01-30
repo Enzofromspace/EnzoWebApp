@@ -37,18 +37,20 @@ const ChoiceBox = ({ text, onClick, socialLink }: ChoiceBoxProps) => {
     return styles[platform] || {};
   };
 
-  const handleClick = async (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
-    try {
-      await playClickSound();
-      if (socialLink) {
-        window.open(socialLink, '_blank');
+    setTimeout(async () => {
+      try {
+        await playClickSound();
+        if (socialLink) {
+          window.open(socialLink, '_blank');
+        }
+        onClick();
+      } catch (err) {
+        console.error('Error playing choice sound:', err);
+        onClick();
       }
-      onClick();
-    } catch (err) {
-      console.error('Error playing choice sound:', err);
-      onClick();
-    }
+    }, 50);
   };
 
   const [title, icon, description] = text.split('\n');
@@ -58,6 +60,7 @@ const ChoiceBox = ({ text, onClick, socialLink }: ChoiceBoxProps) => {
     <button 
       className={`choice-box ${isSocialButton ? 'social-choice' : ''}`}
       onClick={handleClick}
+      onTouchStart={() => {}}
       style={getSocialStyle(text)}
     >
       {isSocialButton ? (
