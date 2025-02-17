@@ -804,7 +804,7 @@ body {
 }
 
 .splash-reel-modal .modal-content.foundation-theme {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.5);
   color: #FF6B35;
   width: 90%;
   max-width: 800px;
@@ -1093,5 +1093,141 @@ body {
     padding: 0.8rem 1.5rem;
     margin-top: 1rem;
     font-size: 0.9em;
+  }
+}
+
+/* Update link styles */
+a[href^="http"], a[href^="https"] {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+a[href^="http"]:hover, a[href^="https"]:hover {
+  opacity: 0.8;
+}
+
+/* Ensure links are tappable on mobile */
+@media (max-width: 768px) {
+  a[href^="http"], a[href^="https"] {
+    padding: 8px;
+    display: inline-block;
+  }
+}
+
+.social-links {
+  display: grid;
+  gap: 15px;
+  padding: 20px;
+}
+
+/* Platform-specific button styles */
+.social-links button {
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8em;
+  line-height: 1.6;
+  transition: all 0.3s ease;
+  white-space: pre-line;
+  width: 100%;
+  border: none;
+}
+
+.social-links button:nth-child(1) { /* YouTube */
+  background: white;
+  border: 2px solid #FF0000;
+  color: #FF0000;
+}
+.social-links button:nth-child(1):hover {
+  background: #FF0000;
+  color: white;
+}
+
+.social-links button:nth-child(2) { /* LinkedIn */
+  background: white;
+  border: 2px solid #0077B5;
+  color: #0077B5;
+}
+.social-links button:nth-child(2):hover {
+  background: #0077B5;
+  color: white;
+}
+
+.social-links button:nth-child(3) { /* Twitch */
+  background: white;
+  border: 2px solid #9146FF;
+  color: #9146FF;
+}
+.social-links button:nth-child(3):hover {
+  background: #9146FF;
+  color: white;
+}
+
+.social-links button:nth-child(4) { /* Twitter */
+  background: white;
+  border: 2px solid #1DA1F2;
+  color: #1DA1F2;
+}
+.social-links button:nth-child(4):hover {
+  background: #1DA1F2;
+  color: white;
+}
+
+.social-links button:nth-child(5) { /* TikTok */
+  background: white;
+  border: 2px solid #000000;
+  color: #000000;
+  position: relative;
+  overflow: hidden;
+}
+.social-links button:nth-child(5):hover {
+  background: linear-gradient(45deg, #00f2ea, #ff0050);
+  color: white;
+  border: none;
+}
+
+/* Update modal background opacity */
+.splash-reel-modal .modal-content.foundation-theme {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .social-links button {
+    padding: 12px;
+    font-size: 0.7em;
+  }
+}
+
+.external-link-button {
+  background: #FF6B35;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 20px auto;
+  display: block;
+}
+
+.external-link-button:hover {
+  transform: translateY(-2px);
+  background: #ff8255;
+}
+
+.link-content {
+  text-align: center;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .external-link-button {
+    padding: 12px 24px;
+    font-size: 0.8em;
   }
 } 

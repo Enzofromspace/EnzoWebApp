@@ -289,19 +289,24 @@ const dialogueCallbacks: Record<string, DialogueCallback> = {
               height="315" 
               src="https://www.youtube.com/embed/Glu5bS6QLTo?si=5UFD_3tx-LtkMrH3" 
               title="YouTube video player" 
-              frameborder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen
+              loading="lazy"
             ></iframe>
           </div>
-          <a href="https://foundationinc.co/contact/" target="_blank" rel="noopener noreferrer" class="contact-button">
+          <a href="https://foundationinc.co/contact/" class="contact-button" rel="noopener noreferrer">
             Contact Foundation
           </a>
         </div>
       </div>
     `;
     
+    // Add link handler
+    const contactLink = modal.querySelector('.contact-button');
+    contactLink?.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleExternalLink('https://foundationinc.co/contact/');
+    });
+
     modal.classList.add('tv-animation');
     document.body.appendChild(modal);
     
@@ -451,6 +456,48 @@ const loreContent: Record<string, string> = {
   '/lore/digital-enlightenment.md': digitalEnlightenment,
 };
 
+// Update the link handler to be more reliable
+const handleExternalLink = (url: string) => {
+  // Create a button that requires user interaction
+  const linkButton = document.createElement('button');
+  linkButton.className = 'external-link-button';
+  linkButton.innerHTML = 'Open New Tab→';
+  
+  const modal = document.createElement('div');
+  modal.className = 'splash-reel-modal';
+  modal.innerHTML = `
+    <div class="modal-content foundation-theme">
+      <div class="modal-header">
+        <span class="exit-button">EXIT</span>
+      </div>
+      <div class="link-content">
+      <p><strong>You're about to leave the site to view a new page. Click below to continue</strong></p>
+      <div class="button-container"></div>
+      </div>
+    </div>
+  `;
+  
+  modal.querySelector('.button-container')?.appendChild(linkButton);
+  document.body.appendChild(modal);
+
+  // Handle the click event
+  linkButton.addEventListener('click', () => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    modal.remove();
+  });
+
+  // Handle exit
+  const exitBtn = modal.querySelector('.exit-button');
+  const handleExit = () => {
+    modal.remove();
+  };
+  
+  exitBtn?.addEventListener('click', handleExit);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') handleExit();
+  });
+};
+
 // Update dialogueTree to include callbacks
 const dialogueTree: DialogueTree = {
   "start": {
@@ -471,41 +518,54 @@ const dialogueTree: DialogueTree = {
   },
   "get_to_know_end": {
     text: "Launching bio...",
-    callback: () => {
-      window.open('https://foundationinc.co/team/enzo-carletti', '_blank');
-    },
+    callback: () => handleExternalLink('https://foundationinc.co/team/enzo-carletti'),
     isEndNode: true
   },
   "get_to_know_end2": {
-    text: "Electronic interdependence recreates the world in the image of a global village.",
-    choices: [
-      {
-        text: "YouTube\n🎥\nAI Tutorials for Code, Marketing, and Business.",
-        nextNode: "youtube_social",
-        socialLink: "https://youtube.com"
-      },
-      {
-        text: "LinkedIn\n💼\nWeekly Newsletter on Marketing, Business, or Philosophy.",
-        nextNode: "linkedin_social",
-        socialLink: "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7289151971377188864"
-      },
-      {
-        text: "Twitch\n🎮\nKick back and relax with Enzo. Sometimes live demos or interviews.",
-        nextNode: "twitch_social",
-        socialLink: "https://www.twitch.tv/snackmedia"
-      },
-      {
-        text: "Twitter\n🐦\nI'd leave this app but I've been addicted since 2011.",
-        nextNode: "twitter_social",
-        socialLink: "https://x.com/EnzoFromSpace"
-      },
-      {
-        text: "TikTok\n📱\nCreative experiments in audio, video, editing and code.",
-        nextNode: "tiktok_social",
-        socialLink: "https://www.tiktok.com/@enzofromspace"
-      }
-    ],
-   isEndNode: true
+    text: "ily",
+    callback: () => {
+      const modal = document.createElement('div');
+      modal.className = 'splash-reel-modal';
+      modal.innerHTML = `
+        <div class="modal-content foundation-theme">
+          <div class="modal-header">
+            <span class="exit-button">EXIT</span>
+          </div>
+          <div class="social-links">
+            <button onclick="window.open('https://youtube.com', '_blank')">
+              YouTube<br>🎥<br>AI Tutorials for Code, Marketing, and Business.
+            </button>
+            <button onclick="window.open('https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7289151971377188864', '_blank')">
+              LinkedIn<br>💼<br>Weekly Newsletter on Marketing, Business, or Philosophy.
+            </button>
+            <button onclick="window.open('https://www.twitch.tv/snackmedia', '_blank')">
+              Twitch<br>🎮<br>Kick back and relax with Enzo. Sometimes live demos or interviews.
+            </button>
+            <button onclick="window.open('https://x.com/EnzoFromSpace', '_blank')">
+              Twitter<br>🐦<br>I'd leave this app but I've been addicted since 2011.
+            </button>
+            <button onclick="window.open('https://www.tiktok.com/@enzofromspace', '_blank')">
+              TikTok<br>📱<br>Creative experiments in audio, video, editing and code.
+            </button>
+          </div>
+        </div>
+      `;
+      
+      modal.classList.add('tv-animation');
+      document.body.appendChild(modal);
+      
+      const exitBtn = modal.querySelector('.exit-button');
+      const handleExit = () => {
+        modal.classList.add('tv-off');
+        setTimeout(() => modal.remove(), 500);
+      };
+      
+      exitBtn?.addEventListener('click', handleExit);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') handleExit();
+      });
+    },
+    isEndNode: true
   },
   "get_to_know_end3": {
     text: "Accessing project documentation...",
@@ -596,22 +656,18 @@ const dialogueTree: DialogueTree = {
     isEndNode: true
   },
   "splash_reel": {
-    text: "Loading Foundation's splash reel...",
+    text: "Loading splash reel...",
     callback: dialogueCallbacks.showSplashReel,
     isEndNode: true
   },
   "case_studies": {
-    text: "Opening Foundation case studies...",
-    callback: () => {
-      handleExternalLink('https://foundationinc.co/case-studies');
-    },
+    text: "Opening case studies...",
+    callback: () => handleExternalLink('https://foundationinc.co/case-studies'),
     isEndNode: true
   },
   "foundation_call": {
     text: "One moment please...",
-    callback: () => {
-      window.open('https://foundationinc.co/contact/', '_blank');
-    },
+    callback: () => handleExternalLink('https://foundationinc.co/contact/'),
     isEndNode: true
   },
   "dpr_calendly": {
@@ -627,6 +683,13 @@ const dialogueTree: DialogueTree = {
   "publicity_calendly": {
     text: "Opening publicity consultation calendar...",
     callback: dialogueCallbacks.showPublicityCalendly,
+    isEndNode: true
+  },
+  "work_with_end": {
+    text: "Opening contact form...",
+    callback: () => {
+      handleExternalLink('https://foundationinc.co/contact/');
+    },
     isEndNode: true
   }
 };
@@ -749,17 +812,9 @@ class DialogueManager {
     if (choiceIndex >= 0 && choiceIndex < choices.length) {
       const choice = choices[choiceIndex];
       
-      // If it's a social link, don't change nodes
+      // Handle social links first and immediately
       if (choice.socialLink) {
-        // Keep current text and continue cycling
-        window.dispatchEvent(new CustomEvent('dialogue-update'));
-        
-        // Resume content cycle after a delay
-        setTimeout(() => {
-          this.animationComplete = true;
-          this.startContentCycle();
-        }, DialogueManager.INITIAL_DELAY);
-        
+        handleExternalLink(choice.socialLink);
         return;
       }
 
@@ -772,12 +827,26 @@ class DialogueManager {
       this.currentNode = nextNode;
       const currentNodeData = dialogueTree[nextNode];
 
+      // For end nodes with link callbacks, execute immediately
+      if (currentNodeData.isEndNode && currentNodeData.callback) {
+        // If callback is a link handler, execute it right away
+        if (currentNodeData.text.includes('Opening') || 
+            currentNodeData.text.includes('Launching')) {
+          currentNodeData.callback();
+          this.currentText = currentNodeData.text;
+          this.animationComplete = true;
+          window.dispatchEvent(new CustomEvent('dialogue-update', { 
+            detail: { skipAnimation: true } 
+          }));
+          return;
+        }
+      }
+
+      // Handle other cases normally
       this.currentText = currentNodeData?.text || "Something went wrong...";
       this.animationComplete = false;
-      
       window.dispatchEvent(new CustomEvent('dialogue-update'));
 
-      // For end nodes with callbacks, wait for animation to complete
       if (currentNodeData.isEndNode && currentNodeData.callback) {
         window.addEventListener('text-animation-complete', () => {
           currentNodeData.callback!();
@@ -918,16 +987,3 @@ export const startAutoPlay = () => DialogueManager.getInstance().startAutoPlay()
 export const resetToHome = () => DialogueManager.getInstance().resetToHome();
 export const navigateBack = () => DialogueManager.getInstance().navigateBack();
 export const navigateForward = () => DialogueManager.getInstance().navigateForward(); 
-
-// Update the callback handling for links
-const handleExternalLink = (url: string) => {
-  // For mobile Safari and other mobile browsers
-  const newWindow = window.open();
-  if (newWindow) {
-    newWindow.opener = null;
-    newWindow.location.href = url;
-  } else {
-    // Fallback if window.open() is blocked
-    window.location.href = url;
-  }
-}; 
